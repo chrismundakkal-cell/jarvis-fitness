@@ -814,8 +814,7 @@ import { initializeApp } from
 import {
     getAuth,
     GoogleAuthProvider,
-    signInWithRedirect,
-    getRedirectResult,
+    signInWithPopup,
     onAuthStateChanged,
     signOut,
     setPersistence,
@@ -921,10 +920,11 @@ document.getElementById("googleLogin")
         "CONNECTING TO GOOGLE...";
 
     try {
-        await signInWithRedirect(auth, provider);
+        await signInWithPopup(auth, provider);
     } catch (error) {
         document.getElementById("loginStatus").textContent =
             error.message;
+        console.error("JARVIS Google sign-in failed:", error);
     }
 });
 
@@ -938,7 +938,7 @@ async function startJarvis() {
             browserLocalPersistence
         );
 
-        await getRedirectResult(auth);
+        // Popup sign-in does not require redirect-result processing.
 
     } catch (error) {
         document.getElementById("loginStatus").textContent =
