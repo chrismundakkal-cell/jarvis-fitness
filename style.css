@@ -380,3 +380,69 @@ main p {
     background: #071323;
     border-radius: 8px;
 }
+
+/* JARVIS FITNESS — MOBILE LAYOUT FIX */
+
+@media screen and (max-width: 600px) {
+
+  body {
+    padding: 10px;
+  }
+
+  header {
+    padding: 24px 10px;
+  }
+
+  header h1 {
+    font-size: 26px;
+    letter-spacing: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  header p {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  main {
+    width: 100%;
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .workout-section {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  #nutritionTracker {
+    width: 100%;
+    max-width: 100%;
+    padding: 15px !important;
+  }
+
+  main h2 {
+    font-size: 21px;
+    overflow-wrap: anywhere;
+  }
+
+  input,
+  select,
+  button {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  #nutritionTracker #addFood {
+    width: 100%;
+  }
+
+  #workoutHistory li,
+  #foodHistory li {
+    overflow-wrap: anywhere;
+  }
+
+}
