@@ -1,0 +1,382 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #050b18;
+    color: #eaf6ff;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    padding: 30px;
+}
+
+header {
+    text-align: center;
+    padding: 40px 20px;
+    border-bottom: 1px solid #087cff;
+    box-shadow: 0 5px 25px rgba(0, 140, 255, 0.15);
+}
+
+header h1 {
+    font-size: 48px;
+    letter-spacing: 12px;
+    color: #00bfff;
+    text-shadow: 0 0 15px #008cff;
+}
+
+header p {
+    margin-top: 15px;
+    color: #7acbff;
+    letter-spacing: 4px;
+    font-size: 13px;
+}
+
+main {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 35px;
+    background: #0b1729;
+    border: 1px solid #087cff;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 140, 255, 0.15);
+}
+
+main h2 {
+    color: #00bfff;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+main p {
+    color: #b7dfff;
+    font-size: 17px;
+    line-height: 1.6;
+}
+/* JARVIS WORKOUT LOGGER */
+
+.workout-section {
+    margin-top: 35px;
+    padding: 30px;
+    background: #071426;
+    border: 1px solid #00bfff;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
+}
+
+.workout-section h2 {
+    color: #00bfff;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+}
+
+#workoutForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 35px;
+}
+
+#workoutForm input,
+#workoutForm select {
+    width: 100%;
+    padding: 15px;
+    background: #0b2038;
+    color: #ffffff;
+    border: 1px solid #087cff;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+#workoutForm input:focus,
+#workoutForm select:focus {
+    border-color: #00e5ff;
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+
+#workoutForm input::placeholder {
+    color: #8ba9c4;
+}
+
+#workoutForm button {
+    padding: 16px;
+    background: linear-gradient(135deg, #0066ff, #00bfff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#workoutForm button:hover {
+    background: linear-gradient(135deg, #00bfff, #00e5ff);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.7);
+    transform: translateY(-2px);
+}
+
+#workoutHistory {
+    list-style: none;
+    padding: 0;
+}
+
+#workoutHistory li {
+    background: #10243d;
+    color: #d5efff;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-left: 4px solid #00bfff;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* JARVIS STARTUP SCREEN */
+
+.jarvis-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: radial-gradient(
+        circle,
+        #102d4b 0%,
+        #050b18 75%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    overflow-y: auto;
+    transition: opacity 0.7s ease;
+}
+
+.jarvis-intro.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-content {
+    width: 100%;
+    max-width: 500px;
+}
+
+.intro-content h1 {
+    color: #00cfff;
+    font-size: clamp(28px, 7vw, 46px);
+    letter-spacing: 6px;
+    text-shadow: 0 0 20px #008cff;
+    margin: 20px 0 10px;
+}
+
+.intro-content h2 {
+    color: white;
+    margin: 25px 0 10px;
+}
+
+.intro-content p {
+    color: #a8dfff;
+    margin: 10px 0;
+}
+
+.system-status {
+    color: #00ffcc !important;
+    letter-spacing: 4px;
+    animation: pulse 2s infinite;
+}
+
+.helmet {
+    width: 160px;
+    height: 190px;
+    margin: 0 auto;
+    position: relative;
+    filter: drop-shadow(0 0 22px #00aaff);
+    animation: floatHelmet 3s ease-in-out infinite;
+}
+
+.helmet-top {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 140px;
+    height: 125px;
+    background: linear-gradient(
+        135deg,
+        #ff4545,
+        #8b0000
+    );
+    border: 3px solid #ffb900;
+    border-radius: 65px 65px 20px 20px;
+}
+
+.helmet-face {
+    position: absolute;
+    top: 55px;
+    left: 25px;
+    width: 110px;
+    height: 125px;
+    background: linear-gradient(
+        135deg,
+        #ffe27a,
+        #d48a00,
+        #805000
+    );
+    clip-path: polygon(
+        10% 0,
+        90% 0,
+        100% 30%,
+        85% 85%,
+        65% 100%,
+        35% 100%,
+        15% 85%,
+        0 30%
+    );
+}
+
+.helmet-eyes {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    width: 90px;
+}
+
+.helmet-eyes span {
+    width: 38px;
+    height: 13px;
+    background: #bfffff;
+    box-shadow: 0 0 18px 7px #00bfff;
+    transform: skew(-12deg);
+    animation: pulse 2s infinite;
+}
+
+.helmet-mouth {
+    position: absolute;
+    bottom: 25px;
+    left: 30px;
+    width: 50px;
+    height: 5px;
+    background: #603500;
+    border-radius: 5px;
+}
+
+#dailyMotivation {
+    color: #00e5ff;
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 25px auto;
+}
+
+#skipIntro {
+    padding: 14px 30px;
+    background: transparent;
+    color: #00dfff;
+    border: 1px solid #00bfff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+#skipIntro:hover {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 0 20px #00bfff;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes floatHelmet {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .helmet,
+    .helmet-eyes span,
+    .system-status {
+        animation: none;
+    }
+
+    .jarvis-intro {
+        transition: none;
+    }
+}
+/* JARVIS Nutrition Intelligence Styling */
+
+#nutritionTracker {
+    background: linear-gradient(145deg, #101d30, #081525) !important;
+    border: 1px solid #00c8ff !important;
+    border-radius: 18px !important;
+    padding: 30px !important;
+    box-shadow: 0 0 25px rgba(0, 200, 255, 0.15) !important;
+}
+
+#nutritionTracker h2 {
+    color: #00c8ff;
+    text-shadow: 0 0 12px rgba(0, 200, 255, 0.5);
+}
+
+#nutritionTracker input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background: #071323;
+    color: #ffffff;
+    border: 1px solid #245574;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 12px 0;
+    font-size: 15px;
+    outline: none;
+}
+
+#nutritionTracker input:focus {
+    border-color: #00c8ff;
+    box-shadow: 0 0 12px rgba(0, 200, 255, 0.35);
+}
+
+#nutritionTracker input::placeholder {
+    color: #a8c7d8;
+}
+
+#nutritionTracker #addFood {
+    background: linear-gradient(90deg, #0077b6, #00c8ff);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#nutritionTracker #addFood:hover {
+    box-shadow: 0 0 18px rgba(0, 200, 255, 0.6);
+}
+
+#nutritionTracker #nutritionTotals {
+    color: #ffffff;
+    margin-top: 20px;
+}
+
+#nutritionTracker #nutritionRemaining {
+    color: #80eaff;
+}
+
+#nutritionTracker #foodHistory {
+    padding-left: 20px;
+}
+
+#nutritionTracker #foodHistory li {
+    padding: 10px;
+    margin: 8px 0;
+    background: #071323;
+    border-radius: 8px;
+}

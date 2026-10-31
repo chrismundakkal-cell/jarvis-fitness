@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARVIS Fitness Intelligence</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.daily-workout {
+    margin-top: 30px;
+    padding: 25px;
+    background: #071426;
+    border: 1px solid #00bfff;
+    border-radius: 15px;
+}
+
+.daily-workout h2 {
+    color: #00bfff;
+    margin-bottom: 15px;
+}
+
+.workout-date {
+    color: #9acfff;
+    margin-bottom: 15px;
+}
+
+.exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin: 12px 0;
+    background: #10243d;
+    border-left: 4px solid #00bfff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.exercise-item input {
+    width: 20px;
+    height: 20px;
+    accent-color: #00bfff;
+    flex-shrink: 0;
+}
+
+.exercise-item span {
+    color: white;
+}
+
+.exercise-item:has(input:checked) {
+    opacity: 0.6;
+    border-left-color: #00ff99;
+}
+
+.exercise-item input:checked + span {
+    text-decoration: line-through;
+}
+
+.progress-container {
+    width: 100%;
+    height: 20px;
+    background: #10243d;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #0066ff, #00e5ff);
+    transition: width 0.3s;
+}
+
+.progress-text {
+    color: #00e5ff;
+    font-weight: bold;
+}
+
+#workoutForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#workoutForm input,
+#workoutForm select {
+    padding: 12px;
+    background: #10243d;
+    color: white;
+    border: 1px solid #00bfff;
+    border-radius: 8px;
+}
+
+#workoutForm button {
+    padding: 14px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#workoutForm button:hover {
+    background: #00bfff;
+}
+
+#workoutHistory {
+    margin-top: 15px;
+    padding-left: 20px;
+    color: #d5efff;
+}
+</style>
+</head>
+
+<body>
+<div id="jarvisIntro" class="jarvis-intro">
+    <div class="intro-content">
+        <div class="helmet">
+            <div class="helmet-top"></div>
+            <div class="helmet-face">
+                <div class="helmet-eyes">
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="helmet-mouth"></div>
+            </div>
+        </div>
+
+        <h1>J.A.R.V.I.S.</h1>
+        <p class="system-status">SYSTEM ONLINE</p>
+
+        <h2>Welcome back, sir.</h2>
+        <p>Your fitness mission awaits.</p>
+
+        <p id="dailyMotivation"></p>
+
+        <button id="skipIntro" type="button">
+            ENTER DASHBOARD
+        </button>
+    </div>
+</div>
+
+<header>
+    <h1>JARVIS</h1>
+    <p>PERSONAL FITNESS INTELLIGENCE SYSTEM</p>
+</header>
+
+<main>
+
+<h2>Welcome Back</h2>
+<p>Your personal fitness dashboard is online.</p>
+
+<section class="daily-workout">
+
+    <h2>Today's Workout Mission</h2>
+
+    <p class="workout-date" id="currentDate"></p>
+
+    <h2 id="workoutTitle"></h2>
+
+    <div id="exerciseList"></div>
+
+    <h2>Mission Progress</h2>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <p class="progress-text" id="progressText">0% Completed</p>
+
+</section>
+
+<section class="workout-section">
+
+    <h2>Log Additional Workout</h2>
+
+    <form id="workoutForm">
+
+        <input
+            type="text"
+            id="exercise"
+            placeholder="Exercise name"
+            required
+        >
+
+        <input
+            type="number"
+            id="amount"
+            placeholder="Reps or minutes"
+            min="1"
+            required
+        >
+
+        <select id="unit">
+            <option value="reps">Repetitions</option>
+            <option value="minutes">Minutes</option>
+        </select>
+
+        <button type="submit">Save Workout</button>
+
+    </form>
+
+    <h2>Workout History</h2>
+
+    <ul id="workoutHistory"></ul>
+
+</section>
+
+</main>
+
+<script>
+
+const workoutPlan = {
+
+    0: {
+        title: "Sunday - Active Recovery",
+        exercises: [
+            "Easy walking - 20 to 30 minutes",
+            "Gentle stretching - 10 minutes",
+            "Relaxation and breathing - 5 minutes"
+        ]
+    },
+
+    1: {
+        title: "Monday - Upper Body",
+        exercises: [
+            "Warm-up - 5 minutes",
+            "Incline or wall push-ups - 3 sets x 10",
+            "Knee push-ups - 2 sets x 6",
+            "Wall slides - 3 sets x 12",
+            "Standing arm circles - 3 sets x 20",
+            "Walking - 8000 steps",
+            "Cool-down - 5 minutes"
+        ]
+    },
+
+    2: {
+        title: "Tuesday - Legs and Core",
+        exercises: [
+            "Warm-up - 5 minutes",
+            "Bodyweight squats - 3 sets x 12",
+            "Glute bridges - 3 sets x 12",
+            "Standing calf raises - 3 sets x 15",
+            "Bird dogs - 2 sets x 8 each side",
+            "Walking - 8000 steps",
+            "Cool-down - 5 minutes"
+        ]
+    },
+
+    3: {
+        title: "Wednesday - Cardio and Mobility",
+        exercises: [
+            "Warm-up - 5 minutes",
+            "Brisk walking - 25 minutes",
+            "Low-impact marching - 3 sets x 60 seconds",
+            "Standing side steps - 3 sets x 20",
+            "Gentle mobility - 10 minutes",
+            "Walking - 8000 steps total"
+        ]
+    },
+
+    4: {
+        title: "Thursday - Full Body",
+        exercises: [
+            "Warm-up - 5 minutes",
+            "Incline push-ups - 3 sets x 10",
+            "Bodyweight squats - 3 sets x 12",
+            "Glute bridges - 3 sets x 12",
+            "Bird dogs - 2 sets x 8 each side",
+            "Standing calf raises - 3 sets x 15",
+            "Walking - 8000 steps",
+            "Cool-down - 5 minutes"
+        ]
+    },
+
+    5: {
+        title: "Friday - Upper Body and Core",
+        exercises: [
+            "Warm-up - 5 minutes",
+            "Wall push-ups - 3 sets x 12",
+            "Knee push-ups - 2 sets x 6",
+            "Wall slides - 3 sets x 12",
+            "Bird dogs - 3 sets x 8 each side",
+            "Walking - 8000 steps",
+            "Cool-down - 5 minutes"
+        ]
+    },
+
+    6: {
+        title: "Saturday - Cardio and Mobility",
+        exercises: [
+            "Warm-up - 5 minutes",
+            "Brisk walking - 30 minutes",
+            "Low-impact marching - 3 sets x 60 seconds",
+            "Standing side steps - 3 sets x 20",
+            "Gentle stretching - 10 minutes",
+            "Walking - 8000 steps total"
+        ]
+    }
+};
+
+function getLocalDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+let activeDate = getLocalDateKey(new Date());
+
+function loadDailyWorkout() {
+
+    const today = new Date();
+    activeDate = getLocalDateKey(today);
+
+    const day = today.getDay();
+    const plan = workoutPlan[day];
+
+    document.getElementById("currentDate").textContent =
+        today.toDateString();
+
+    document.getElementById("workoutTitle").textContent =
+        plan.title;
+
+    const exerciseList =
+        document.getElementById("exerciseList");
+
+    exerciseList.innerHTML = "";
+
+    let savedProgress = [];
+
+    try {
+        savedProgress = JSON.parse(
+            localStorage.getItem("jarvisDaily_" + activeDate)
+        ) || [];
+    } catch (error) {
+        savedProgress = [];
+    }
+
+    plan.exercises.forEach((exercise, index) => {
+
+        const label = document.createElement("label");
+        label.className = "exercise-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = savedProgress.includes(index);
+
+        const text = document.createElement("span");
+        text.textContent = exercise;
+
+        checkbox.addEventListener("change", saveDailyProgress);
+
+        label.appendChild(checkbox);
+        label.appendChild(text);
+
+        exerciseList.appendChild(label);
+
+    });
+
+    updateProgress();
+}
+
+function saveDailyProgress() {
+
+    const checkboxes = document.querySelectorAll(
+        "#exerciseList input[type='checkbox']"
+    );
+
+    const completed = [];
+
+    checkboxes.forEach((checkbox, index) => {
+        if (checkbox.checked) {
+            completed.push(index);
+        }
+    });
+
+    localStorage.setItem(
+        "jarvisDaily_" + activeDate,
+        JSON.stringify(completed)
+    );
+
+    updateProgress();
+}
+
+function updateProgress() {
+
+    const checkboxes = document.querySelectorAll(
+        "#exerciseList input[type='checkbox']"
+    );
+
+    const total = checkboxes.length;
+
+    const completed = Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked).length;
+
+    const percentage = total
+        ? Math.round((completed / total) * 100)
+        : 0;
+
+    document.getElementById("progressBar").style.width =
+        percentage + "%";
+
+    document.getElementById("progressText").textContent =
+        percentage + "% Completed (" +
+        completed + "/" + total + " exercises)";
+
+}
+
+let workouts = [];
+
+try {
+    workouts = JSON.parse(
+        localStorage.getItem("jarvisWorkouts")
+    ) || [];
+} catch (error) {
+    workouts = [];
+}
+
+function displayWorkouts() {
+
+    const history =
+        document.getElementById("workoutHistory");
+
+    history.innerHTML = "";
+
+    workouts.forEach(workout => {
+
+        const item = document.createElement("li");
+
+        item.textContent =
+            workout.exercise + " - " +
+            workout.amount + " " +
+            workout.unit;
+
+        history.appendChild(item);
+
+    });
+}
+
+document.getElementById("workoutForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const exercise =
+            document.getElementById("exercise").value.trim();
+
+        const amount =
+            Number(document.getElementById("amount").value);
+
+        const unit =
+            document.getElementById("unit").value;
+
+        if (!exercise || !Number.isFinite(amount) || amount <= 0) {
+            return;
+        }
+
+        workouts.push({
+            exercise: exercise,
+            amount: amount,
+            unit: unit
+        });
+
+        localStorage.setItem(
+            "jarvisWorkouts",
+            JSON.stringify(workouts)
+        );
+
+        displayWorkouts();
+
+        this.reset();
+    });
+
+loadDailyWorkout();
+displayWorkouts();
+
+setInterval(function() {
+    if (getLocalDateKey(new Date()) !== activeDate) {
+        loadDailyWorkout();
+    }
+}, 60000);
+
+</script>
+
+<script>
+(function () {
+    const slogans = [
+        "Discipline today. Strength tomorrow.",
+        "Your only competition is yesterday's you.",
+        "Every repetition brings you closer to your goal.",
+        "Greatness is built one day at a time.",
+        "Consistency beats motivation.",
+        "Your future self is counting on you.",
+        "Rest, recover, and return stronger.",
+        "Progress begins when excuses end.",
+        "Build the body. Strengthen the mind.",
+        "Small victories create extraordinary results."
+    ];
+
+    const today = new Date();
+
+    const startOfYear = new Date(
+        today.getFullYear(),
+        0,
+        1
+    );
+
+    const dayNumber = Math.floor(
+        (
+            Date.UTC(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate()
+            ) -
+            Date.UTC(today.getFullYear(), 0, 1)
+        ) / 86400000
+    );
+
+    const sloganIndex = dayNumber % slogans.length;
+
+    document.getElementById("dailyMotivation").textContent =
+        slogans[sloganIndex];
+
+    const intro = document.getElementById("jarvisIntro");
+
+    let introClosed = false;
+
+    function closeIntro() {
+        if (introClosed) return;
+
+        introClosed = true;
+        intro.classList.add("hidden");
+
+        setTimeout(function () {
+            intro.remove();
+        }, 700);
+    }
+
+    document.getElementById("skipIntro")
+        .addEventListener("click", closeIntro);
+
+    setTimeout(closeIntro, 5000);
+})();
+</script>
+
+<script>
+(function () {
+    const calorieTarget = 2000;
+    const proteinTarget = 125;
+
+    const section = document.createElement("section");
+    section.id = "nutritionTracker";
+
+    section.innerHTML = `
+        <h2>🥗 JARVIS Nutrition Intelligence</h2>
+        <p>Daily Targets: 2,000 kcal | 125 g Protein</p>
+
+        <h3 id="nutritionTotals">Loading...</h3>
+        <p id="nutritionRemaining"></p>
+
+        <input id="foodName" type="text" placeholder="Food name">
+        <input id="foodCalories" type="number" min="0" placeholder="Calories (kcal)">
+        <input id="foodProtein" type="number" min="0" step="0.1" placeholder="Protein (g)">
+
+        <button id="addFood" type="button">LOG FOOD</button>
+
+        <h3>Today's Food Log</h3>
+        <ul id="foodHistory"></ul>
+    `;
+
+    section.style.cssText = `
+        background: #101d30;
+        color: white;
+        padding: 24px;
+        margin: 30px auto;
+        max-width: 750px;
+        border: 1px solid #00c8ff;
+        border-radius: 15px;
+        box-shadow: 0 0 15px #00c8ff33;
+    `;
+
+    document.body.appendChild(section);
+
+    const date = new Date();
+    const todayKey =
+        date.getFullYear() + "-" +
+        String(date.getMonth() + 1).padStart(2, "0") + "-" +
+        String(date.getDate()).padStart(2, "0");
+
+    const storageKey = "jarvisNutrition_" + todayKey;
+
+    let meals = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+    function updateNutrition() {
+        const calories = meals.reduce((sum, meal) => sum + meal.calories, 0);
+        const protein = meals.reduce((sum, meal) => sum + meal.protein, 0);
+
+        document.getElementById("nutritionTotals").textContent =
+            `${calories.toFixed(0)} / ${calorieTarget} kcal | ` +
+            `${protein.toFixed(1)} / ${proteinTarget} g protein`;
+
+        document.getElementById("nutritionRemaining").textContent =
+            `${Math.max(0, calorieTarget - calories).toFixed(0)} kcal remaining | ` +
+            `${Math.max(0, proteinTarget - protein).toFixed(1)} g protein remaining`;
+
+        const history = document.getElementById("foodHistory");
+        history.innerHTML = "";
+
+        meals.forEach((meal, index) => {
+            const item = document.createElement("li");
+            item.textContent =
+                `${meal.name}: ${meal.calories} kcal, ${meal.protein} g protein `;
+
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Remove";
+            removeButton.type = "button";
+
+            removeButton.onclick = function () {
+                meals.splice(index, 1);
+                localStorage.setItem(storageKey, JSON.stringify(meals));
+                updateNutrition();
+            };
+
+            item.appendChild(removeButton);
+            history.appendChild(item);
+        });
+    }
+
+    document.getElementById("addFood").onclick = function () {
+        const name = document.getElementById("foodName").value.trim();
+        const caloriesText = document.getElementById("foodCalories").value;
+        const proteinText = document.getElementById("foodProtein").value;
+        const calories = Number(caloriesText);
+        const protein = Number(proteinText);
+
+        if (!name || caloriesText === "" || proteinText === "" ||
+            !Number.isFinite(calories) || !Number.isFinite(protein) ||
+            calories < 0 || protein < 0) {
+            alert("Please enter a food name, calories, and protein.");
+            return;
+        }
+
+        meals.push({ name, calories, protein });
+        localStorage.setItem(storageKey, JSON.stringify(meals));
+
+        document.getElementById("foodName").value = "";
+        document.getElementById("foodCalories").value = "";
+        document.getElementById("foodProtein").value = "";
+
+        updateNutrition();
+    };
+
+    updateNutrition();
+})();
+</script>
+
+<script src="foods.js"></script>
+
+<script>
+(function () {
+    const foods = window.jarvisFoods ||
+        (typeof jarvisFoods !== "undefined" ? jarvisFoods : []);
+
+    const nameInput = document.getElementById("foodName");
+    const calorieInput = document.getElementById("foodCalories");
+    const proteinInput = document.getElementById("foodProtein");
+    const addButton = document.getElementById("addFood");
+
+    if (!nameInput || !calorieInput || !proteinInput || !addButton) {
+        console.warn("JARVIS: Nutrition inputs not found.");
+        return;
+    }
+
+    if (!foods.length) {
+        console.warn("JARVIS: Food database is empty or unavailable.");
+        return;
+    }
+
+    // Searchable food suggestions
+    const suggestions = document.createElement("datalist");
+    suggestions.id = "jarvisFoodSuggestions";
+
+    foods.forEach(food => {
+        const option = document.createElement("option");
+        option.value = food.name;
+        option.label = food.cuisine;
+        suggestions.appendChild(option);
+    });
+
+    document.body.appendChild(suggestions);
+
+    nameInput.setAttribute("list", "jarvisFoodSuggestions");
+    nameInput.placeholder = "Search foods: egg, rice, chicken...";
+
+    // Quantity controls
+    const controls = document.createElement("div");
+    controls.style.margin = "12px 0";
+
+    const quantity = document.createElement("input");
+    quantity.type = "number";
+    quantity.min = "0.1";
+    quantity.step = "any";
+    quantity.value = "100";
+    quantity.placeholder = "Quantity";
+
+    const unit = document.createElement("select");
+
+    const gramOption = document.createElement("option");
+    gramOption.value = "grams";
+    gramOption.textContent = "Grams";
+
+    const portionOption = document.createElement("option");
+    portionOption.value = "portion";
+    portionOption.textContent = "Portions (estimated)";
+
+    unit.appendChild(gramOption);
+    unit.appendChild(portionOption);
+
+    const info = document.createElement("p");
+    info.style.fontSize = "12px";
+    info.style.color = "#8fdfff";
+
+    controls.appendChild(quantity);
+    controls.appendChild(unit);
+    controls.appendChild(info);
+
+    nameInput.insertAdjacentElement("afterend", controls);
+
+    calorieInput.readOnly = true;
+    proteinInput.readOnly = true;
+
+    // Approximate household portion weights in grams
+    const portionWeights = {
+        "Boiled Egg": 50,
+        "Chapati / Roti": 40,
+        "Idli": 40,
+        "Plain Dosa": 100,
+        "Samosa": 100,
+        "Vada Pav": 150,
+        "Banana": 120,
+        "Apple": 180
+    };
+
+    function calculateNutrition() {
+        const food = foods.find(item =>
+            item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
+        );
+
+        if (!food) {
+            calorieInput.value = "";
+            proteinInput.value = "";
+            info.textContent = "Select a food from the suggestions.";
+            return;
+        }
+
+        const amount = Number(quantity.value);
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            calorieInput.value = "";
+            proteinInput.value = "";
+            info.textContent = "Enter a quantity greater than zero.";
+            return;
+        }
+
+const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
+        const grams = unit.value === "grams"
+            ? amount
+            : amount * portionGrams;
+
+        calorieInput.value = (food.calories * grams / 100).toFixed(1);
+        proteinInput.value = (food.protein * grams / 100).toFixed(1);
+
+        info.textContent =
+            "Calculated for approximately " + grams.toFixed(0) + " g.";
+    }
+
+    nameInput.addEventListener("input", calculateNutrition);
+    quantity.addEventListener("input", calculateNutrition);
+    unit.addEventListener("change", calculateNutrition);
+
+    // Add quantity details to the existing food log
+    addButton.addEventListener("click", function () {
+        const food = foods.find(item =>
+            item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
+        );
+
+        if (!food || !calorieInput.value || !proteinInput.value) {
+            return;
+        }
+
+        const amount = Number(quantity.value);
+
+        if (amount <= 0) return;
+
+        const grams = unit.value === "grams"
+            ? amount
+            : amount * (food.portionGrams || portionWeights[food.name] || 150);
+
+        nameInput.value =
+            food.name + " (" + grams.toFixed(0) + " g)";
+    }, true);
+
+    console.log("JARVIS Food Intelligence activated:", foods.length, "foods");
+})();
+</script>
+</body>
+</html>
