@@ -680,21 +680,96 @@ setInterval(function() {
         return;
     }
 
-    // Searchable food suggestions
-    const suggestions = document.createElement("datalist");
-    suggestions.id = "jarvisFoodSuggestions";
-
-    foods.forEach(food => {
-        const option = document.createElement("option");
-        option.value = food.name;
-        option.label = food.cuisine;
-        suggestions.appendChild(option);
-    });
-
-    document.body.appendChild(suggestions);
-
-    nameInput.setAttribute("list", "jarvisFoodSuggestions");
+    // Custom food suggestions: iOS Safari renders native datalist options
+    // inside the keyboard, so use an accessible, scrollable HTML menu instead.
+    const suggestionBox = document.createElement("div");
+    suggestionBox.id = "jarvisFoodSuggestions";
+    suggestionBox.setAttribute("role", "listbox");
+    suggestionBox.setAttribute("aria-label", "Food search suggestions");
+    suggestionBox.style.cssText = `
+        display:none;
+        box-sizing:border-box;
+        width:100%;
+        max-height:220px;
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
+        background:#0b2038;
+        border:1px solid #00bfff;
+        border-radius:10px;
+        margin:6px 0 12px;
+        box-shadow:0 8px 20px #0008;
+        position:relative;
+        z-index:20;
+    `;
+    nameInput.removeAttribute("list");
+    nameInput.setAttribute("autocomplete", "off");
+    nameInput.setAttribute("aria-autocomplete", "list");
+    nameInput.setAttribute("aria-controls", "jarvisFoodSuggestions");
     nameInput.placeholder = "Search foods: egg, rice, chicken...";
+    nameInput.insertAdjacentElement("afterend", suggestionBox);
+
+    function hideFoodSuggestions() {
+        suggestionBox.style.display = "none";
+        suggestionBox.replaceChildren();
+        nameInput.setAttribute("aria-expanded", "false");
+    }
+
+    function renderFoodSuggestions() {
+        const query = nameInput.value.trim().toLowerCase();
+        suggestionBox.replaceChildren();
+        if (!query) { hideFoodSuggestions(); return; }
+
+        const matches = foods.filter(food =>
+            food.name.toLowerCase().includes(query)
+        ).slice(0, 40);
+
+        if (!matches.length) { hideFoodSuggestions(); return; }
+
+        matches.forEach(food => {
+            const choice = document.createElement("button");
+            choice.type = "button";
+            choice.setAttribute("role", "option");
+            choice.style.cssText = `
+                display:block;
+                width:100%;
+                text-align:left;
+                padding:12px 14px;
+                border:0;
+                border-bottom:1px solid #24445e;
+                background:transparent;
+                color:#fff;
+                font-size:16px;
+                cursor:pointer;
+                white-space:normal;
+            `;
+            const foodName = document.createElement("span");
+            foodName.textContent = food.name;
+            choice.appendChild(foodName);
+            if (food.cuisine) {
+                const cuisine = document.createElement("small");
+                cuisine.style.cssText = "display:block;color:#8fdfff;margin-top:3px;";
+                cuisine.textContent = food.cuisine;
+                choice.appendChild(cuisine);
+            }
+            choice.addEventListener("click", () => {
+                nameInput.value = food.name;
+                hideFoodSuggestions();
+                calculateNutrition();
+                nameInput.blur();
+            });
+            suggestionBox.appendChild(choice);
+        });
+        suggestionBox.style.display = "block";
+        nameInput.setAttribute("aria-expanded", "true");
+    }
+
+    nameInput.addEventListener("input", renderFoodSuggestions);
+    nameInput.addEventListener("focus", renderFoodSuggestions);
+    document.addEventListener("click", event => {
+        if (event.target !== nameInput && !suggestionBox.contains(event.target)) {
+            hideFoodSuggestions();
+        }
+    });
 
     // Quantity controls
     const controls = document.createElement("div");
