@@ -807,5 +807,168 @@ const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
     console.log("JARVIS Food Intelligence activated:", foods.length, "foods");
 })();
 </script>
+<script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithRedirect,
+    getRedirectResult,
+    onAuthStateChanged,
+    signOut,
+    setPersistence,
+    browserLocalPersistence
+} from
+"https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+/* YOUR FIREBASE CONFIGURATION */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAfFAchCqqc-PmDqDMLesfOgAVvrXIpJew",
+    authDomain: "jarvis-fitness-dd97d.firebaseapp.com",
+    projectId: "jarvis-fitness-dd97d",
+    appId: "1:73637661074:web:205381cdbd44c473cf194b"
+};
+
+/* INITIALIZE FIREBASE */
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+/* LOGIN SCREEN */
+
+const loginScreen = document.createElement("div");
+
+loginScreen.id = "jarvisLogin";
+
+loginScreen.innerHTML = `
+    <div style="
+        background:#0b1729;
+        border:1px solid #00bfff;
+        border-radius:18px;
+        padding:35px;
+        text-align:center;
+        max-width:380px;
+        width:90%;
+        box-shadow:0 0 25px rgba(0,191,255,.3);
+    ">
+        <h1 style="color:#00bfff;letter-spacing:5px;">
+            J.A.R.V.I.S.
+        </h1>
+
+        <p style="color:#a8dfff;">
+            PERSONAL FITNESS INTELLIGENCE SYSTEM
+        </p>
+
+        <h2 style="color:white;">
+            Welcome, Sir.
+        </h2>
+
+        <p style="color:#a8dfff;">
+            Authenticate to access your fitness dashboard.
+        </p>
+
+        <button id="googleLogin" style="
+            padding:15px;
+            width:100%;
+            background:#087cff;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            cursor:pointer;
+            margin-top:20px;
+        ">
+            Sign in with Google
+        </button>
+
+        <p id="loginStatus" style="color:#00e5ff;">
+            JARVIS SECURITY SYSTEM ONLINE
+        </p>
+    </div>
+`;
+
+loginScreen.style.cssText = `
+    position:fixed;
+    inset:0;
+    z-index:10000;
+    background:#050b18;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial,sans-serif;
+`;
+
+document.body.appendChild(loginScreen);
+
+/* HIDE DASHBOARD UNTIL AUTHENTICATED */
+
+const header = document.querySelector("header");
+const main = document.querySelector("main");
+
+if (header) header.style.display = "none";
+if (main) main.style.display = "none";
+
+/* GOOGLE LOGIN */
+
+document.getElementById("googleLogin")
+.addEventListener("click", async function() {
+
+    document.getElementById("loginStatus").textContent =
+        "CONNECTING TO GOOGLE...";
+
+    try {
+        await signInWithRedirect(auth, provider);
+    } catch (error) {
+        document.getElementById("loginStatus").textContent =
+            error.message;
+    }
+});
+
+/* REMEMBER LOGIN */
+
+async function startJarvis() {
+
+    try {
+        await setPersistence(
+            auth,
+            browserLocalPersistence
+        );
+
+        await getRedirectResult(auth);
+
+    } catch (error) {
+        document.getElementById("loginStatus").textContent =
+            error.message;
+    }
+}
+
+onAuthStateChanged(auth, function(user) {
+
+    if (user) {
+
+        loginScreen.remove();
+
+        if (header) header.style.display = "";
+        if (main) main.style.display = "";
+
+        console.log("JARVIS authenticated:", user.email);
+
+    } else {
+
+        loginScreen.style.display = "flex";
+
+        if (header) header.style.display = "none";
+        if (main) main.style.display = "none";
+    }
+
+});
+
+startJarvis();
+
+</script>
 </body>
 </html>
