@@ -119,9 +119,21 @@
 .jarvis-page[hidden]{display:none!important}
 #nutritionTracker{box-sizing:border-box;width:calc(100% - 24px)}
 #nutritionTracker input,#nutritionTracker select{max-width:100%;box-sizing:border-box}
-#jarvisScanner{box-sizing:border-box;width:calc(100% - 24px);max-width:750px;margin:30px auto;padding:24px;background:#101d30;border:1px solid #00c8ff;border-radius:15px;color:white}
-#jarvisScanner input,#jarvisScanner textarea{display:block;width:100%;box-sizing:border-box;margin:12px 0;padding:12px;background:#10243d;color:white;border:1px solid #00bfff;border-radius:8px;font-size:16px}
-#jarvisScanner button{padding:12px 18px;background:#087cff;color:#fff;border:0;border-radius:9px;cursor:pointer}
+#jarvisSteps{box-sizing:border-box;width:calc(100% - 24px);max-width:750px;margin:30px auto;padding:24px;background:#101d30;border:1px solid #00c8ff;border-radius:15px;color:white}
+#jarvisSteps input{display:block;width:100%;box-sizing:border-box;margin:8px 0 14px;padding:12px;background:#10243d;color:white;border:1px solid #00bfff;border-radius:8px;font-size:16px}
+#jarvisSteps .step-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+#jarvisSteps label{display:block;color:#b9eaff;font-size:14px}
+#jarvisSteps .step-summary{background:#0b2038;border-radius:12px;padding:16px;margin:16px 0}
+#jarvisSteps .step-summary strong{display:block;font-size:20px;color:#fff}
+#jarvisSteps .step-summary small{display:block;color:#9acfff;margin-top:5px}
+#jarvisSteps .steps-progress-track{height:14px;background:#18354f;border-radius:20px;overflow:hidden;margin:14px 0}
+#stepsProgressBar{height:100%;width:0;background:linear-gradient(90deg,#0066ff,#00e5ff);transition:width .2s}
+#jarvisSteps .step-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#jarvisSteps .step-metrics>div{min-width:0}
+#jarvisSteps .step-metrics strong{font-size:clamp(15px,4vw,21px)}
+#jarvisSteps .step-note{font-size:13px;color:#a8cfe5;line-height:1.55}
+#stepFeedback{color:#00d5ff;font-weight:600}
+@media(max-width:450px){#jarvisSteps .step-fields{grid-template-columns:1fr}#jarvisSteps .step-metrics{grid-template-columns:1fr 1fr}#jarvisSteps{padding:18px}}
 #scanPreview{max-width:100%;max-height:330px;object-fit:contain;border-radius:12px;margin:12px 0;display:none}
 #jarvisServingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 #jarvisServingControls input{flex:1 1 100px;min-width:90px}
@@ -165,7 +177,7 @@
 <nav class="jarvis-tabs" aria-label="JARVIS sections" hidden>
 <button class="jarvis-tab" type="button" data-page="dashboard" aria-selected="true">🏋️ Dashboard</button>
 <button class="jarvis-tab" type="button" data-page="nutrition" aria-selected="false">🥗 Nutrition</button>
-<button class="jarvis-tab" type="button" data-page="scanner" aria-selected="false">📷 Scanner</button>
+<button class="jarvis-tab" type="button" data-page="steps" aria-selected="false">🚶 Steps & Health</button>
 </nav>
 <main id="jarvisDashboard" class="jarvis-page">
 
@@ -952,68 +964,65 @@ const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
     console.log("JARVIS Food Intelligence activated:", foods.length, "foods");
 })();
 </script>
-<section id="jarvisScanner" class="jarvis-page" hidden>
-<h2>📷 JARVIS Food Scanner</h2>
-<p>Take a photo of your meal, packaging or nutrition label. Review it and log the nutrition details.</p>
-<label for="scanPhoto">Food or nutrition-label photo</label>
-<input id="scanPhoto" type="file" accept="image/*" capture="environment">
-<img id="scanPreview" alt="Preview of your selected food photo">
-<p id="scanStatus" style="color:#9acfff">Automatic AI recognition is not connected yet. Photos stay on your device in this version.</p>
-<label for="scanName">Food name</label>
-<input id="scanName" type="text" placeholder="e.g. Chicken curry">
-<label for="scanCalories">Calories for the amount eaten (kcal)</label>
-<input id="scanCalories" type="number" min="0" step="any" placeholder="Calories">
-<label for="scanProtein">Protein for the amount eaten (g)</label>
-<input id="scanProtein" type="number" min="0" step="any" placeholder="Protein">
-<button id="scanLog" type="button">Add to nutrition log</button>
+<section id="jarvisSteps" class="jarvis-page" hidden>
+<h2>🚶 JARVIS Steps &amp; Health</h2>
+<p>Enter today's steps from your Pedometer app. Set your own goal and see approximate walking energy expenditure.</p>
+<div class="step-fields">
+<label for="stepGoal">Daily step goal<input id="stepGoal" type="number" min="100" max="100000" step="100" value="8000" inputmode="numeric"></label>
+<label for="stepCount">Steps walked today<input id="stepCount" type="number" min="0" max="150000" step="1" value="0" inputmode="numeric"></label>
+<label for="stepWeight">Your weight (kg)<input id="stepWeight" type="number" min="20" max="400" step="0.1" value="85" inputmode="decimal"></label>
+<label for="stepStride">Estimated step length (cm)<input id="stepStride" type="number" min="30" max="130" step="1" value="70" inputmode="numeric"></label>
+</div>
+<div class="step-summary">
+<div><strong id="stepsProgressText">0 / 8,000 steps</strong><small>Today's progress</small></div>
+<div class="steps-progress-track"><div id="stepsProgressBar"></div></div>
+<div class="step-metrics"><div><strong id="stepsDistance">0.00 km</strong><small>Estimated distance</small></div><div><strong id="stepsCalories">0 kcal</strong><small>Estimated active walking calories</small></div><div><strong id="stepsFatEquivalent">0 g</strong><small>Energy equivalent in body fat — not actual fat lost</small></div></div>
+</div>
+<p id="stepFeedback" aria-live="polite"></p>
+<p class="step-note">Estimates assume level-ground walking and roughly 0.5 kcal per kg per km. Speed, terrain, fitness and your actual stride affect the result. The fat-equivalent figure divides estimated calories by 7.7 kcal/g; it does <strong>not</strong> measure body fat burned or weight lost. Fat loss depends on your total energy balance over time.</p>
+<p class="step-note">Your entries are saved on this device. Steps do not sync automatically with Apple Health or Pedometer.</p>
 </section>
 <script>
 (function(){
-    const nav = document.querySelector('.jarvis-tabs');
-    const pages = {dashboard:document.getElementById('jarvisDashboard'),nutrition:document.getElementById('nutritionTracker'),scanner:document.getElementById('jarvisScanner')};
-    const buttons = [...document.querySelectorAll('.jarvis-tab')];
+    const nav=document.querySelector('.jarvis-tabs');
+    const pages={dashboard:document.getElementById('jarvisDashboard'),nutrition:document.getElementById('nutritionTracker'),steps:document.getElementById('jarvisSteps')};
+    const buttons=[...document.querySelectorAll('.jarvis-tab')];
     function openPage(key){
-        Object.entries(pages).forEach(([name,page]) => { page.hidden = name !== key; });
-        buttons.forEach(button => button.setAttribute('aria-selected', String(button.dataset.page === key)));
+        Object.entries(pages).forEach(([name,page])=>{page.hidden=name!==key;});
+        buttons.forEach(button=>button.setAttribute('aria-selected',String(button.dataset.page===key)));
         window.scrollTo(0,0);
     }
-    buttons.forEach(button => button.addEventListener('click',()=>openPage(button.dataset.page)));
-    nav.hidden = false;
+    buttons.forEach(button=>button.addEventListener('click',()=>openPage(button.dataset.page)));
+    nav.hidden=false;
     openPage('dashboard');
-    const photo = document.getElementById('scanPhoto');
-    const preview = document.getElementById('scanPreview');
-    let photoURL = null;
-    photo.addEventListener('change',()=>{
-        if(photoURL) URL.revokeObjectURL(photoURL);
-        const file=photo.files[0];
-        if(!file || !file.type.startsWith('image/')) {preview.style.display='none';return;}
-        photoURL=URL.createObjectURL(file);
-        preview.src=photoURL;
-        preview.style.display='block';
-    });
-    document.getElementById('scanLog').addEventListener('click',()=>{
-        const name=document.getElementById('scanName').value.trim();
-        const calories=document.getElementById('scanCalories').value;
-        const protein=document.getElementById('scanProtein').value;
-        if(!name || calories==='' || protein==='' || !Number.isFinite(Number(calories)) || !Number.isFinite(Number(protein)) || Number(calories)<0 || Number(protein)<0){
-            alert('Please enter a food name, calories and protein from the label or your estimate.');return;
-        }
-        document.getElementById('foodName').value=name;
-        document.getElementById('foodName').dispatchEvent(new Event('input',{bubbles:true}));
-        const calorieField=document.getElementById('foodCalories');
-        const proteinField=document.getElementById('foodProtein');
-        if(calorieField.readOnly || proteinField.readOnly){
-            alert('This food matches the database. Please log it from the Nutrition tab using its serving size.');
-            openPage('nutrition');return;
-        }
-        calorieField.value=calories;
-        proteinField.value=protein;
-        document.getElementById('addFood').click();
-        document.getElementById('scanName').value='';
-        document.getElementById('scanCalories').value='';
-        document.getElementById('scanProtein').value='';
-        openPage('nutrition');
-    });
+    const goal=document.getElementById('stepGoal');
+    const count=document.getElementById('stepCount');
+    const weight=document.getElementById('stepWeight');
+    const stride=document.getElementById('stepStride');
+    const key='jarvisSteps_'+getLocalDateKey(new Date());
+    function read(key,fallback){try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v);}catch(e){return fallback;}}
+    goal.value=read('jarvisStepGoal',8000);
+    weight.value=read('jarvisStepWeight',85);
+    stride.value=read('jarvisStepStride',70);
+    count.value=read(key,0);
+    const fmt=n=>Math.round(n).toLocaleString('en-IN');
+    function update(){
+        const g=Number(goal.value),n=Number(count.value),w=Number(weight.value),st=Number(stride.value);
+        const valid=Number.isFinite(g)&&g>=100&&g<=100000&&Number.isInteger(n)&&n>=0&&n<=150000&&w>=20&&w<=400&&st>=30&&st<=130;
+        const feedback=document.getElementById('stepFeedback');
+        if(!valid){feedback.textContent='Enter a valid goal (100–100,000), steps (0–150,000), weight (20–400 kg) and step length (30–130 cm).';return;}
+        feedback.textContent=n>=g?'Daily step goal achieved!':'You are '+fmt(g-n)+' steps from your goal.';
+        const km=n*st/100000;
+        const kcal=km*w*0.5;
+        document.getElementById('stepsProgressText').textContent=fmt(n)+' / '+fmt(g)+' steps ('+Math.round(n/g*100)+'%)';
+        document.getElementById('stepsProgressBar').style.width=Math.min(100,n/g*100)+'%';
+        document.getElementById('stepsDistance').textContent=km.toFixed(2)+' km';
+        document.getElementById('stepsCalories').textContent=fmt(kcal)+' kcal';
+        document.getElementById('stepsFatEquivalent').textContent=fmt(kcal/7.7)+' g';
+        try{localStorage.setItem('jarvisStepGoal',JSON.stringify(g));localStorage.setItem('jarvisStepWeight',JSON.stringify(w));localStorage.setItem('jarvisStepStride',JSON.stringify(st));localStorage.setItem(key,JSON.stringify(n));}catch(e){feedback.textContent+=' Storage unavailable; values may not persist.';}
+    }
+    [goal,count,weight,stride].forEach(el=>el.addEventListener('input',update));
+    update();
 })();
 </script>
 
