@@ -805,8 +805,14 @@ setInterval(function() {
 
     nameInput.insertAdjacentElement("afterend", controls);
 
-    calorieInput.readOnly = true;
-    proteinInput.readOnly = true;
+    // Known foods are calculated automatically; unknown foods are editable.
+    function setManualMode(isManual) {
+        calorieInput.readOnly = !isManual;
+        proteinInput.readOnly = !isManual;
+        calorieInput.style.backgroundColor = isManual ? "#173b46" : "";
+        proteinInput.style.backgroundColor = isManual ? "#173b46" : "";
+    }
+    setManualMode(true);
 
     // Approximate household portion weights in grams
     const portionWeights = {
@@ -828,10 +834,14 @@ setInterval(function() {
         if (!food) {
             calorieInput.value = "";
             proteinInput.value = "";
-            info.textContent = "Select a food from the suggestions.";
+            setManualMode(true);
+            info.textContent = nameInput.value.trim()
+                ? "Custom food: enter calories and protein for the amount you ate."
+                : "Search for a food, or type your own and enter its nutrition.";
             return;
         }
 
+        setManualMode(false);
         const amount = Number(quantity.value);
 
         if (!Number.isFinite(amount) || amount <= 0) {
@@ -854,6 +864,14 @@ const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
     }
 
     nameInput.addEventListener("input", calculateNutrition);
+    // Reset to manual entry after successfully logging a food.
+    addButton.addEventListener("click", function () {
+        if (!nameInput.value.trim()) {
+            setManualMode(true);
+            info.textContent = "Search for a food, or type your own and enter its nutrition.";
+            hideFoodSuggestions();
+        }
+    });
     quantity.addEventListener("input", calculateNutrition);
     unit.addEventListener("change", calculateNutrition);
 
@@ -863,9 +881,9 @@ const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
             item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
         );
 
-        if (!food || !calorieInput.value || !proteinInput.value) {
-            return;
-        }
+        // Manual foods go straight to the existing logger, unchanged.
+        if (!food) return;
+        if (!calorieInput.value || !proteinInput.value) return;
 
         const amount = Number(quantity.value);
 
