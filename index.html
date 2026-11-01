@@ -111,6 +111,21 @@
     padding-left: 20px;
     color: #d5efff;
 }
+
+/* JARVIS mobile navigation */
+.jarvis-tabs{display:flex;gap:8px;max-width:800px;margin:16px auto;padding:0 12px;position:sticky;top:0;z-index:100;background:#071426ee;backdrop-filter:blur(12px)}
+.jarvis-tab{flex:1;min-width:0;padding:13px 5px;border:1px solid #1e789e;border-radius:11px;background:#10243d;color:#b9eaff;font-weight:700;font-size:clamp(11px,3vw,15px);cursor:pointer}
+.jarvis-tab[aria-selected="true"]{background:#087cff;color:#fff;border-color:#00c8ff}
+.jarvis-page[hidden]{display:none!important}
+#nutritionTracker{box-sizing:border-box;width:calc(100% - 24px)}
+#nutritionTracker input,#nutritionTracker select{max-width:100%;box-sizing:border-box}
+#jarvisScanner{box-sizing:border-box;width:calc(100% - 24px);max-width:750px;margin:30px auto;padding:24px;background:#101d30;border:1px solid #00c8ff;border-radius:15px;color:white}
+#jarvisScanner input,#jarvisScanner textarea{display:block;width:100%;box-sizing:border-box;margin:12px 0;padding:12px;background:#10243d;color:white;border:1px solid #00bfff;border-radius:8px;font-size:16px}
+#jarvisScanner button{padding:12px 18px;background:#087cff;color:#fff;border:0;border-radius:9px;cursor:pointer}
+#scanPreview{max-width:100%;max-height:330px;object-fit:contain;border-radius:12px;margin:12px 0;display:none}
+#jarvisServingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#jarvisServingControls input{flex:1 1 100px;min-width:90px}
+#jarvisServingControls select{flex:2 1 190px;min-width:150px}
 </style>
 </head>
 
@@ -147,7 +162,12 @@
     <p>PERSONAL FITNESS INTELLIGENCE SYSTEM</p>
 </header>
 
-<main>
+<nav class="jarvis-tabs" aria-label="JARVIS sections" hidden>
+<button class="jarvis-tab" type="button" data-page="dashboard" aria-selected="true">🏋️ Dashboard</button>
+<button class="jarvis-tab" type="button" data-page="nutrition" aria-selected="false">🥗 Nutrition</button>
+<button class="jarvis-tab" type="button" data-page="scanner" aria-selected="false">📷 Scanner</button>
+</nav>
+<main id="jarvisDashboard" class="jarvis-page">
 
 <h2>Welcome Back</h2>
 <p>Your personal fitness dashboard is online.</p>
@@ -554,6 +574,8 @@ setInterval(function() {
 
     const section = document.createElement("section");
     section.id = "nutritionTracker";
+    section.classList.add("jarvis-page");
+    section.hidden = true;
 
     section.innerHTML = `
         <h2>🥗 JARVIS Nutrition Intelligence</h2>
@@ -784,20 +806,31 @@ setInterval(function() {
 
     const unit = document.createElement("select");
 
-    const gramOption = document.createElement("option");
-    gramOption.value = "grams";
-    gramOption.textContent = "Grams";
-
-    const portionOption = document.createElement("option");
-    portionOption.value = "portion";
-    portionOption.textContent = "Portions (estimated)";
-
-    unit.appendChild(gramOption);
-    unit.appendChild(portionOption);
+    const servingOptions = [
+        ["grams", "Grams (g)"],
+        ["half-teaspoon", "Half small spoon (½ tsp)"],
+        ["teaspoon", "Small spoon (1 tsp)"],
+        ["half-tablespoon", "Half big spoon (½ tbsp)"],
+        ["tablespoon", "Big spoon (1 tbsp)"],
+        ["half-bowl", "Half bowl"],
+        ["medium-bowl", "Medium bowl"],
+        ["full-bowl", "Full bowl"],
+        ["half-plate", "Half plate"],
+        ["full-plate", "Full plate"],
+        ["portion", "One serving (estimated)"]
+    ];
+    servingOptions.forEach(([value, label]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = label;
+        unit.appendChild(option);
+    });
+    controls.id = "jarvisServingControls";
 
     const info = document.createElement("p");
     info.style.fontSize = "12px";
     info.style.color = "#8fdfff";
+    info.textContent = "Serving weights are estimates; adjust for your actual dish.";
 
     controls.appendChild(quantity);
     controls.appendChild(unit);
@@ -826,6 +859,29 @@ setInterval(function() {
         "Apple": 180
     };
 
+    function servingGrams(food, amount) {
+        const base = Number(food.portionGrams || portionWeights[food.name] || 150);
+        const name = food.name.toLowerCase();
+        const isLiquid = /milk|juice|tea|coffee|soup|lassi|shake|water|dal|curry|gravy|sambar|rasam/.test(name);
+        const isDense = /rice|biryani|pulao|pasta|noodle|poha|upma|khichdi/.test(name);
+        const bowl = isLiquid ? 200 : isDense ? 180 : 150;
+        const plate = isLiquid ? 250 : isDense ? 300 : 220;
+        const weights = {
+            "grams": 1,
+            "half-teaspoon": 2.5,
+            "teaspoon": 5,
+            "half-tablespoon": 7.5,
+            "tablespoon": 15,
+            "half-bowl": bowl / 2,
+            "medium-bowl": bowl * 0.75,
+            "full-bowl": bowl,
+            "half-plate": plate / 2,
+            "full-plate": plate,
+            "portion": base
+        };
+        return amount * weights[unit.value];
+    }
+
     function calculateNutrition() {
         const food = foods.find(item =>
             item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
@@ -852,9 +908,7 @@ setInterval(function() {
         }
 
 const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
-        const grams = unit.value === "grams"
-            ? amount
-            : amount * portionGrams;
+        const grams = servingGrams(food, amount);
 
         calorieInput.value = (food.calories * grams / 100).toFixed(1);
         proteinInput.value = (food.protein * grams / 100).toFixed(1);
@@ -889,9 +943,7 @@ const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
 
         if (amount <= 0) return;
 
-        const grams = unit.value === "grams"
-            ? amount
-            : amount * (food.portionGrams || portionWeights[food.name] || 150);
+        const grams = servingGrams(food, amount);
 
         nameInput.value =
             food.name + " (" + grams.toFixed(0) + " g)";
@@ -900,6 +952,71 @@ const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
     console.log("JARVIS Food Intelligence activated:", foods.length, "foods");
 })();
 </script>
+<section id="jarvisScanner" class="jarvis-page" hidden>
+<h2>📷 JARVIS Food Scanner</h2>
+<p>Take a photo of your meal, packaging or nutrition label. Review it and log the nutrition details.</p>
+<label for="scanPhoto">Food or nutrition-label photo</label>
+<input id="scanPhoto" type="file" accept="image/*" capture="environment">
+<img id="scanPreview" alt="Preview of your selected food photo">
+<p id="scanStatus" style="color:#9acfff">Automatic AI recognition is not connected yet. Photos stay on your device in this version.</p>
+<label for="scanName">Food name</label>
+<input id="scanName" type="text" placeholder="e.g. Chicken curry">
+<label for="scanCalories">Calories for the amount eaten (kcal)</label>
+<input id="scanCalories" type="number" min="0" step="any" placeholder="Calories">
+<label for="scanProtein">Protein for the amount eaten (g)</label>
+<input id="scanProtein" type="number" min="0" step="any" placeholder="Protein">
+<button id="scanLog" type="button">Add to nutrition log</button>
+</section>
+<script>
+(function(){
+    const nav = document.querySelector('.jarvis-tabs');
+    const pages = {dashboard:document.getElementById('jarvisDashboard'),nutrition:document.getElementById('nutritionTracker'),scanner:document.getElementById('jarvisScanner')};
+    const buttons = [...document.querySelectorAll('.jarvis-tab')];
+    function openPage(key){
+        Object.entries(pages).forEach(([name,page]) => { page.hidden = name !== key; });
+        buttons.forEach(button => button.setAttribute('aria-selected', String(button.dataset.page === key)));
+        window.scrollTo(0,0);
+    }
+    buttons.forEach(button => button.addEventListener('click',()=>openPage(button.dataset.page)));
+    nav.hidden = false;
+    openPage('dashboard');
+    const photo = document.getElementById('scanPhoto');
+    const preview = document.getElementById('scanPreview');
+    let photoURL = null;
+    photo.addEventListener('change',()=>{
+        if(photoURL) URL.revokeObjectURL(photoURL);
+        const file=photo.files[0];
+        if(!file || !file.type.startsWith('image/')) {preview.style.display='none';return;}
+        photoURL=URL.createObjectURL(file);
+        preview.src=photoURL;
+        preview.style.display='block';
+    });
+    document.getElementById('scanLog').addEventListener('click',()=>{
+        const name=document.getElementById('scanName').value.trim();
+        const calories=document.getElementById('scanCalories').value;
+        const protein=document.getElementById('scanProtein').value;
+        if(!name || calories==='' || protein==='' || !Number.isFinite(Number(calories)) || !Number.isFinite(Number(protein)) || Number(calories)<0 || Number(protein)<0){
+            alert('Please enter a food name, calories and protein from the label or your estimate.');return;
+        }
+        document.getElementById('foodName').value=name;
+        document.getElementById('foodName').dispatchEvent(new Event('input',{bubbles:true}));
+        const calorieField=document.getElementById('foodCalories');
+        const proteinField=document.getElementById('foodProtein');
+        if(calorieField.readOnly || proteinField.readOnly){
+            alert('This food matches the database. Please log it from the Nutrition tab using its serving size.');
+            openPage('nutrition');return;
+        }
+        calorieField.value=calories;
+        proteinField.value=protein;
+        document.getElementById('addFood').click();
+        document.getElementById('scanName').value='';
+        document.getElementById('scanCalories').value='';
+        document.getElementById('scanProtein').value='';
+        openPage('nutrition');
+    });
+})();
+</script>
+
 <script type="module">
 import { initializeApp } from
 "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
@@ -1003,6 +1120,7 @@ const main = document.querySelector("main");
 
 if (header) header.style.display = "none";
 if (main) main.style.display = "none";
+if (document.querySelector(".jarvis-tabs")) document.querySelector(".jarvis-tabs").style.display = "none";
 
 /* GOOGLE LOGIN */
 
@@ -1047,6 +1165,7 @@ onAuthStateChanged(auth, function(user) {
 
         if (header) header.style.display = "";
         if (main) main.style.display = "";
+        document.querySelector(".jarvis-tabs").style.display = "flex";
 
         console.log("JARVIS authenticated:", user.email);
 
@@ -1056,6 +1175,7 @@ onAuthStateChanged(auth, function(user) {
 
         if (header) header.style.display = "none";
         if (main) main.style.display = "none";
+        document.querySelector(".jarvis-tabs").style.display = "none";
     }
 
 });
