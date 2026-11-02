@@ -111,33 +111,6 @@
     padding-left: 20px;
     color: #d5efff;
 }
-
-/* JARVIS mobile navigation */
-.jarvis-tabs{display:flex;gap:8px;max-width:800px;margin:16px auto;padding:0 12px;position:sticky;top:0;z-index:100;background:#071426ee;backdrop-filter:blur(12px)}
-.jarvis-tab{flex:1;min-width:0;padding:13px 5px;border:1px solid #1e789e;border-radius:11px;background:#10243d;color:#b9eaff;font-weight:700;font-size:clamp(11px,3vw,15px);cursor:pointer}
-.jarvis-tab[aria-selected="true"]{background:#087cff;color:#fff;border-color:#00c8ff}
-.jarvis-page[hidden]{display:none!important}
-#nutritionTracker{box-sizing:border-box;width:calc(100% - 24px)}
-#nutritionTracker input,#nutritionTracker select{max-width:100%;box-sizing:border-box}
-#jarvisSteps{box-sizing:border-box;width:calc(100% - 24px);max-width:750px;margin:30px auto;padding:24px;background:#101d30;border:1px solid #00c8ff;border-radius:15px;color:white}
-#jarvisSteps input{display:block;width:100%;box-sizing:border-box;margin:8px 0 14px;padding:12px;background:#10243d;color:white;border:1px solid #00bfff;border-radius:8px;font-size:16px}
-#jarvisSteps .step-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
-#jarvisSteps label{display:block;color:#b9eaff;font-size:14px}
-#jarvisSteps .step-summary{background:#0b2038;border-radius:12px;padding:16px;margin:16px 0}
-#jarvisSteps .step-summary strong{display:block;font-size:20px;color:#fff}
-#jarvisSteps .step-summary small{display:block;color:#9acfff;margin-top:5px}
-#jarvisSteps .steps-progress-track{height:14px;background:#18354f;border-radius:20px;overflow:hidden;margin:14px 0}
-#stepsProgressBar{height:100%;width:0;background:linear-gradient(90deg,#0066ff,#00e5ff);transition:width .2s}
-#jarvisSteps .step-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-#jarvisSteps .step-metrics>div{min-width:0}
-#jarvisSteps .step-metrics strong{font-size:clamp(15px,4vw,21px)}
-#jarvisSteps .step-note{font-size:13px;color:#a8cfe5;line-height:1.55}
-#stepFeedback{color:#00d5ff;font-weight:600}
-@media(max-width:450px){#jarvisSteps .step-fields{grid-template-columns:1fr}#jarvisSteps .step-metrics{grid-template-columns:1fr 1fr}#jarvisSteps{padding:18px}}
-#scanPreview{max-width:100%;max-height:330px;object-fit:contain;border-radius:12px;margin:12px 0;display:none}
-#jarvisServingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-#jarvisServingControls input{flex:1 1 100px;min-width:90px}
-#jarvisServingControls select{flex:2 1 190px;min-width:150px}
 </style>
 </head>
 
@@ -174,12 +147,7 @@
     <p>PERSONAL FITNESS INTELLIGENCE SYSTEM</p>
 </header>
 
-<nav class="jarvis-tabs" aria-label="JARVIS sections" hidden>
-<button class="jarvis-tab" type="button" data-page="dashboard" aria-selected="true">🏋️ Dashboard</button>
-<button class="jarvis-tab" type="button" data-page="nutrition" aria-selected="false">🥗 Nutrition</button>
-<button class="jarvis-tab" type="button" data-page="steps" aria-selected="false">🚶 Steps & Health</button>
-</nav>
-<main id="jarvisDashboard" class="jarvis-page">
+<main>
 
 <h2>Welcome Back</h2>
 <p>Your personal fitness dashboard is online.</p>
@@ -586,8 +554,6 @@ setInterval(function() {
 
     const section = document.createElement("section");
     section.id = "nutritionTracker";
-    section.classList.add("jarvis-page");
-    section.hidden = true;
 
     section.innerHTML = `
         <h2>🥗 JARVIS Nutrition Intelligence</h2>
@@ -805,227 +771,82 @@ setInterval(function() {
         }
     });
 
-    // Quantity controls
+    // Quantity and nutrition controls
     const controls = document.createElement("div");
-    controls.style.margin = "12px 0";
-
+    controls.style.cssText = "margin:12px 0;display:flex;gap:8px;flex-wrap:wrap";
     const quantity = document.createElement("input");
-    quantity.type = "number";
-    quantity.min = "0.1";
-    quantity.step = "any";
-    quantity.value = "100";
-    quantity.placeholder = "Quantity";
-
+    quantity.type = "number"; quantity.min = "0.1"; quantity.step = "any";
+    quantity.value = "100"; quantity.placeholder = "Quantity";
+    quantity.style.cssText = "flex:1;min-width:100px";
     const unit = document.createElement("select");
-
-    const servingOptions = [
-        ["grams", "Grams (g)"],
-        ["half-teaspoon", "Half small spoon (½ tsp)"],
-        ["teaspoon", "Small spoon (1 tsp)"],
-        ["half-tablespoon", "Half big spoon (½ tbsp)"],
-        ["tablespoon", "Big spoon (1 tbsp)"],
-        ["half-bowl", "Half bowl"],
-        ["medium-bowl", "Medium bowl"],
-        ["full-bowl", "Full bowl"],
-        ["half-plate", "Half plate"],
-        ["full-plate", "Full plate"],
-        ["portion", "One serving (estimated)"]
-    ];
-    servingOptions.forEach(([value, label]) => {
+    unit.style.cssText = "flex:1;min-width:140px";
+    [["grams","Grams"],["pieces","Pieces"],["portion","Portions (estimated)"],
+     ["teaspoon","Small spoon"],["tablespoon","Big spoon"],["halfspoon","Half spoon"],
+     ["halfbowl","Half bowl"],["mediumbowl","Medium bowl"]].forEach(([value,label]) => {
         const option = document.createElement("option");
-        option.value = value;
-        option.textContent = label;
-        unit.appendChild(option);
+        option.value=value; option.textContent=label; unit.appendChild(option);
     });
-    controls.id = "jarvisServingControls";
-
     const info = document.createElement("p");
-    info.style.fontSize = "12px";
-    info.style.color = "#8fdfff";
-    info.textContent = "Serving weights are estimates; adjust for your actual dish.";
-
-    controls.appendChild(quantity);
-    controls.appendChild(unit);
-    controls.appendChild(info);
-
-    nameInput.insertAdjacentElement("afterend", controls);
-
-    // Known foods are calculated automatically; unknown foods are editable.
-    function setManualMode(isManual) {
-        calorieInput.readOnly = !isManual;
-        proteinInput.readOnly = !isManual;
-        calorieInput.style.backgroundColor = isManual ? "#173b46" : "";
-        proteinInput.style.backgroundColor = isManual ? "#173b46" : "";
-    }
-    setManualMode(true);
-
-    // Approximate household portion weights in grams
-    const portionWeights = {
-        "Boiled Egg": 50,
-        "Chapati / Roti": 40,
-        "Idli": 40,
-        "Plain Dosa": 100,
-        "Samosa": 100,
-        "Vada Pav": 150,
-        "Banana": 120,
-        "Apple": 180
-    };
-
-    function servingGrams(food, amount) {
-        const base = Number(food.portionGrams || portionWeights[food.name] || 150);
-        const name = food.name.toLowerCase();
-        const isLiquid = /milk|juice|tea|coffee|soup|lassi|shake|water|dal|curry|gravy|sambar|rasam/.test(name);
-        const isDense = /rice|biryani|pulao|pasta|noodle|poha|upma|khichdi/.test(name);
-        const bowl = isLiquid ? 200 : isDense ? 180 : 150;
-        const plate = isLiquid ? 250 : isDense ? 300 : 220;
-        const weights = {
-            "grams": 1,
-            "half-teaspoon": 2.5,
-            "teaspoon": 5,
-            "half-tablespoon": 7.5,
-            "tablespoon": 15,
-            "half-bowl": bowl / 2,
-            "medium-bowl": bowl * 0.75,
-            "full-bowl": bowl,
-            "half-plate": plate / 2,
-            "full-plate": plate,
-            "portion": base
-        };
-        return amount * weights[unit.value];
-    }
-
+    info.style.cssText="font-size:12px;color:#8fdfff;width:100%;margin:4px 0";
+    controls.append(quantity,unit,info);
+    nameInput.insertAdjacentElement("afterend",controls);
+    // Estimated values appear directly in editable fields; no toggle required.
+    calorieInput.readOnly = false;
+    proteinInput.readOnly = false;
+    const editHint=document.createElement("p");
+    editHint.style.cssText="font-size:12px;color:#8fdfff;margin:5px 0";
+    editHint.textContent="Estimated values — tap either number to correct it before logging.";
+    proteinInput.insertAdjacentElement("afterend",editHint);
+    const portionWeights={"Boiled Egg":50,"Chapati / Roti":40,"Idli":40,
+      "Plain Dosa":100,"Samosa":100,"Vada Pav":150,"Banana":120,"Apple":180,
+      "Chicken Nugget":20,"Chicken Nuggets":20};
     function calculateNutrition() {
-        const food = foods.find(item =>
-            item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
-        );
-
+        const food=foods.find(item=>item.name.toLowerCase()===nameInput.value.trim().toLowerCase());
+        const amount=Number(quantity.value);
+        calorieInput.readOnly=false;
+        proteinInput.readOnly=false;
         if (!food) {
-            calorieInput.value = "";
-            proteinInput.value = "";
-            setManualMode(true);
-            info.textContent = nameInput.value.trim()
-                ? "Custom food: enter calories and protein for the amount you ate."
-                : "Search for a food, or type your own and enter its nutrition.";
+            calorieInput.value="";proteinInput.value="";
+            info.textContent="Custom food: enter calories and protein for the quantity eaten.";
             return;
         }
-
-        setManualMode(false);
-        const amount = Number(quantity.value);
-
-        if (!Number.isFinite(amount) || amount <= 0) {
-            calorieInput.value = "";
-            proteinInput.value = "";
-            info.textContent = "Enter a quantity greater than zero.";
+        if (!Number.isFinite(amount)||amount<=0) {
+            info.textContent="Enter a quantity greater than zero.";
+            calorieInput.value="";proteinInput.value="";
             return;
         }
-
-const portionGrams = food.portionGrams || portionWeights[food.name] || 150;
-        const grams = servingGrams(food, amount);
-
-        calorieInput.value = (food.calories * grams / 100).toFixed(1);
-        proteinInput.value = (food.protein * grams / 100).toFixed(1);
-
-        info.textContent =
-            "Calculated for approximately " + grams.toFixed(0) + " g.";
+        const perPiece=food.pieceGrams||food.portionGrams||portionWeights[food.name];
+        const portion=food.portionGrams||portionWeights[food.name]||150;
+        const factors={grams:1,pieces:perPiece,portion:portion,teaspoon:5,
+            tablespoon:15,halfspoon:2.5,halfbowl:75,mediumbowl:150};
+        const factor=factors[unit.value];
+        if (!factor) {
+            info.textContent="Piece weight unknown: enter a verified piece weight or switch to grams; manual nutrition can be entered.";
+            calorieInput.value="";proteinInput.value="";
+            return;
+        }
+        const grams=amount*factor;
+        calorieInput.value=(food.calories*grams/100).toFixed(1);
+        proteinInput.value=(food.protein*grams/100).toFixed(1);
+        info.textContent="Estimated "+grams.toFixed(0)+" g. You can directly edit the numbers below.";
     }
-
-    nameInput.addEventListener("input", calculateNutrition);
-    // Reset to manual entry after successfully logging a food.
-    addButton.addEventListener("click", function () {
-        if (!nameInput.value.trim()) {
-            setManualMode(true);
-            info.textContent = "Search for a food, or type your own and enter its nutrition.";
-            hideFoodSuggestions();
-        }
+    nameInput.addEventListener("input",calculateNutrition);
+    quantity.addEventListener("input",calculateNutrition);
+    unit.addEventListener("change",()=>{
+        if(unit.value==="pieces" && Number(quantity.value)===100) quantity.value="1";
+        calculateNutrition();
     });
-    quantity.addEventListener("input", calculateNutrition);
-    unit.addEventListener("change", calculateNutrition);
-
-    // Add quantity details to the existing food log
-    addButton.addEventListener("click", function () {
-        const food = foods.find(item =>
-            item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
-        );
-
-        // Manual foods go straight to the existing logger, unchanged.
-        if (!food) return;
-        if (!calorieInput.value || !proteinInput.value) return;
-
-        const amount = Number(quantity.value);
-
-        if (amount <= 0) return;
-
-        const grams = servingGrams(food, amount);
-
-        nameInput.value =
-            food.name + " (" + grams.toFixed(0) + " g)";
-    }, true);
-
+    addButton.addEventListener("click",function(){
+        const food=foods.find(item=>item.name.toLowerCase()===nameInput.value.trim().toLowerCase());
+        if(!food||!calorieInput.value||!proteinInput.value||Number(quantity.value)<=0)return;
+        nameInput.value=food.name+" ("+quantity.value+" "+unit.options[unit.selectedIndex].text+")";
+    },true);
+    addButton.addEventListener("click",()=>{
+        if(!nameInput.value.trim()){hideFoodSuggestions();info.textContent="Search or enter a food."; }
+    });
     console.log("JARVIS Food Intelligence activated:", foods.length, "foods");
 })();
 </script>
-<section id="jarvisSteps" class="jarvis-page" hidden>
-<h2>🚶 JARVIS Steps &amp; Health</h2>
-<p>Enter today's steps from your Pedometer app. Set your own goal and see approximate walking energy expenditure.</p>
-<div class="step-fields">
-<label for="stepGoal">Daily step goal<input id="stepGoal" type="number" min="100" max="100000" step="100" value="8000" inputmode="numeric"></label>
-<label for="stepCount">Steps walked today<input id="stepCount" type="number" min="0" max="150000" step="1" value="0" inputmode="numeric"></label>
-<label for="stepWeight">Your weight (kg)<input id="stepWeight" type="number" min="20" max="400" step="0.1" value="85" inputmode="decimal"></label>
-<label for="stepStride">Estimated step length (cm)<input id="stepStride" type="number" min="30" max="130" step="1" value="70" inputmode="numeric"></label>
-</div>
-<div class="step-summary">
-<div><strong id="stepsProgressText">0 / 8,000 steps</strong><small>Today's progress</small></div>
-<div class="steps-progress-track"><div id="stepsProgressBar"></div></div>
-<div class="step-metrics"><div><strong id="stepsDistance">0.00 km</strong><small>Estimated distance</small></div><div><strong id="stepsCalories">0 kcal</strong><small>Estimated active walking calories</small></div><div><strong id="stepsFatEquivalent">0 g</strong><small>Energy equivalent in body fat — not actual fat lost</small></div></div>
-</div>
-<p id="stepFeedback" aria-live="polite"></p>
-<p class="step-note">Estimates assume level-ground walking and roughly 0.5 kcal per kg per km. Speed, terrain, fitness and your actual stride affect the result. The fat-equivalent figure divides estimated calories by 7.7 kcal/g; it does <strong>not</strong> measure body fat burned or weight lost. Fat loss depends on your total energy balance over time.</p>
-<p class="step-note">Your entries are saved on this device. Steps do not sync automatically with Apple Health or Pedometer.</p>
-</section>
-<script>
-(function(){
-    const nav=document.querySelector('.jarvis-tabs');
-    const pages={dashboard:document.getElementById('jarvisDashboard'),nutrition:document.getElementById('nutritionTracker'),steps:document.getElementById('jarvisSteps')};
-    const buttons=[...document.querySelectorAll('.jarvis-tab')];
-    function openPage(key){
-        Object.entries(pages).forEach(([name,page])=>{page.hidden=name!==key;});
-        buttons.forEach(button=>button.setAttribute('aria-selected',String(button.dataset.page===key)));
-        window.scrollTo(0,0);
-    }
-    buttons.forEach(button=>button.addEventListener('click',()=>openPage(button.dataset.page)));
-    nav.hidden=false;
-    openPage('dashboard');
-    const goal=document.getElementById('stepGoal');
-    const count=document.getElementById('stepCount');
-    const weight=document.getElementById('stepWeight');
-    const stride=document.getElementById('stepStride');
-    const key='jarvisSteps_'+getLocalDateKey(new Date());
-    function read(key,fallback){try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v);}catch(e){return fallback;}}
-    goal.value=read('jarvisStepGoal',8000);
-    weight.value=read('jarvisStepWeight',85);
-    stride.value=read('jarvisStepStride',70);
-    count.value=read(key,0);
-    const fmt=n=>Math.round(n).toLocaleString('en-IN');
-    function update(){
-        const g=Number(goal.value),n=Number(count.value),w=Number(weight.value),st=Number(stride.value);
-        const valid=Number.isFinite(g)&&g>=100&&g<=100000&&Number.isInteger(n)&&n>=0&&n<=150000&&w>=20&&w<=400&&st>=30&&st<=130;
-        const feedback=document.getElementById('stepFeedback');
-        if(!valid){feedback.textContent='Enter a valid goal (100–100,000), steps (0–150,000), weight (20–400 kg) and step length (30–130 cm).';return;}
-        feedback.textContent=n>=g?'Daily step goal achieved!':'You are '+fmt(g-n)+' steps from your goal.';
-        const km=n*st/100000;
-        const kcal=km*w*0.5;
-        document.getElementById('stepsProgressText').textContent=fmt(n)+' / '+fmt(g)+' steps ('+Math.round(n/g*100)+'%)';
-        document.getElementById('stepsProgressBar').style.width=Math.min(100,n/g*100)+'%';
-        document.getElementById('stepsDistance').textContent=km.toFixed(2)+' km';
-        document.getElementById('stepsCalories').textContent=fmt(kcal)+' kcal';
-        document.getElementById('stepsFatEquivalent').textContent=fmt(kcal/7.7)+' g';
-        try{localStorage.setItem('jarvisStepGoal',JSON.stringify(g));localStorage.setItem('jarvisStepWeight',JSON.stringify(w));localStorage.setItem('jarvisStepStride',JSON.stringify(st));localStorage.setItem(key,JSON.stringify(n));}catch(e){feedback.textContent+=' Storage unavailable; values may not persist.';}
-    }
-    [goal,count,weight,stride].forEach(el=>el.addEventListener('input',update));
-    update();
-})();
-</script>
-
 <script type="module">
 import { initializeApp } from
 "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
@@ -1129,7 +950,6 @@ const main = document.querySelector("main");
 
 if (header) header.style.display = "none";
 if (main) main.style.display = "none";
-if (document.querySelector(".jarvis-tabs")) document.querySelector(".jarvis-tabs").style.display = "none";
 
 /* GOOGLE LOGIN */
 
@@ -1174,7 +994,6 @@ onAuthStateChanged(auth, function(user) {
 
         if (header) header.style.display = "";
         if (main) main.style.display = "";
-        document.querySelector(".jarvis-tabs").style.display = "flex";
 
         console.log("JARVIS authenticated:", user.email);
 
@@ -1184,7 +1003,6 @@ onAuthStateChanged(auth, function(user) {
 
         if (header) header.style.display = "none";
         if (main) main.style.display = "none";
-        document.querySelector(".jarvis-tabs").style.display = "none";
     }
 
 });
