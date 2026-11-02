@@ -111,6 +111,55 @@
     padding-left: 20px;
     color: #d5efff;
 }
+
+/* JARVIS mobile navigation */
+@media(max-width:600px){.jarvis-tabs:not([hidden]){grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.jarvis-tab{font-size:13px;min-height:44px}}
+.jarvis-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:800px;margin:16px auto;padding:0 12px;position:sticky;top:0;z-index:100;background:#071426ee;backdrop-filter:blur(12px)}
+.jarvis-tab{flex:1;min-width:0;padding:13px 5px;border:1px solid #1e789e;border-radius:11px;background:#10243d;color:#b9eaff;font-weight:700;font-size:clamp(11px,3vw,15px);cursor:pointer}
+.jarvis-tab[aria-selected="true"]{background:#087cff;color:#fff;border-color:#00c8ff}
+.jarvis-page[hidden]{display:none!important}
+#nutritionTracker{box-sizing:border-box;width:calc(100% - 24px)}
+#nutritionTracker input,#nutritionTracker select{max-width:100%;box-sizing:border-box}
+#jarvisSteps{box-sizing:border-box;width:calc(100% - 24px);max-width:750px;margin:30px auto;padding:24px;background:#101d30;border:1px solid #00c8ff;border-radius:15px;color:white}
+#jarvisSteps input{display:block;width:100%;box-sizing:border-box;margin:8px 0 14px;padding:12px;background:#10243d;color:white;border:1px solid #00bfff;border-radius:8px;font-size:16px}
+#jarvisSteps .step-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+#jarvisSteps label{display:block;color:#b9eaff;font-size:14px}
+#jarvisSteps .step-summary{background:#0b2038;border-radius:12px;padding:16px;margin:16px 0}
+#jarvisSteps .step-summary strong{display:block;font-size:20px;color:#fff}
+#jarvisSteps .step-summary small{display:block;color:#9acfff;margin-top:5px}
+#jarvisSteps .steps-progress-track{height:14px;background:#18354f;border-radius:20px;overflow:hidden;margin:14px 0}
+#stepsProgressBar{height:100%;width:0;background:linear-gradient(90deg,#0066ff,#00e5ff);transition:width .2s}
+#jarvisSteps .step-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#jarvisSteps .step-metrics>div{min-width:0}
+#jarvisSteps .step-metrics strong{font-size:clamp(15px,4vw,21px)}
+#jarvisSteps .step-note{font-size:13px;color:#a8cfe5;line-height:1.55}
+#stepFeedback{color:#00d5ff;font-weight:600}
+@media(max-width:450px){#jarvisSteps .step-fields{grid-template-columns:1fr}#jarvisSteps .step-metrics{grid-template-columns:1fr 1fr}#jarvisSteps{padding:18px}}
+#scanPreview{max-width:100%;max-height:330px;object-fit:contain;border-radius:12px;margin:12px 0;display:none}
+#jarvisServingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#jarvisServingControls input{flex:1 1 100px;min-width:90px}
+#jarvisServingControls select{flex:2 1 190px;min-width:150px}
+
+/* Fourth tab and history reporting: independent of the original dashboard panels. */
+@media(max-width:480px){.jarvis-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.jarvis-tab{padding:11px 6px;font-size:13px}}
+#jarvisHistory{box-sizing:border-box;max-width:750px;width:calc(100% - 24px);margin:30px auto;padding:22px;background:#101d30;color:#edf7ff;border:1px solid #00c8ff;border-radius:15px}
+#jarvisHistory h2,#jarvisHistory h3{color:#8cddff}
+#jarvisHistory .history-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+#jarvisHistory label{display:block;color:#b8e7fc;font-size:14px;flex:1 1 150px;min-width:0}
+#jarvisHistory input,#jarvisHistory select{display:block;box-sizing:border-box;width:100%;margin:5px 0 10px;padding:12px;min-height:44px;border:1px solid #168ab9;border-radius:8px;background:#10243d;color:white;font-size:16px}
+#jarvisHistory button{min-height:44px;padding:10px 16px;background:#087cff;color:white;border:0;border-radius:9px;font-size:15px;cursor:pointer}
+#jarvisHistory .history-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}
+#jarvisHistory .history-card{min-width:0;background:#0b2038;border:1px solid #24445e;border-radius:11px;padding:14px}
+#jarvisHistory .history-card strong{display:block;font-size:clamp(17px,4vw,23px);overflow-wrap:anywhere}
+#jarvisHistory .history-card span{display:block;font-size:12px;color:#a7cee5;margin-top:4px}
+#jarvisHistory .history-note{font-size:13px;color:#b3cfe0;line-height:1.55}
+#jarvisHistory .history-row{display:grid;grid-template-columns:100px 1fr 1fr;gap:9px;padding:11px 5px;border-bottom:1px solid #24445e;font-size:13px}
+#jarvisHistory .history-row b{font-weight:600;overflow-wrap:anywhere}
+#jarvisHistory .history-row span{overflow-wrap:anywhere}
+#jarvisHistory .history-row:first-child{color:#91d8ff}
+#jarvisHistory .weight-panel{padding:15px;margin-top:20px;border-radius:12px;background:#0b2038}
+#jarvisHistory .weight-result{font-size:25px;font-weight:700;color:#fff;margin:8px 0}
+@media(max-width:400px){#jarvisHistory{padding:15px}#jarvisHistory .history-row{grid-template-columns:78px 1fr 1fr;font-size:12px}}
 </style>
 </head>
 
@@ -147,7 +196,13 @@
     <p>PERSONAL FITNESS INTELLIGENCE SYSTEM</p>
 </header>
 
-<main>
+<nav class="jarvis-tabs" aria-label="JARVIS sections" hidden>
+<button class="jarvis-tab" type="button" data-page="dashboard" aria-selected="true">🏋️ Dashboard</button>
+<button class="jarvis-tab" type="button" data-page="nutrition" aria-selected="false">🥗 Nutrition</button>
+<button class="jarvis-tab" type="button" data-page="steps" aria-selected="false">🚶 Steps & Health</button>
+<button class="jarvis-tab" type="button" data-page="history" aria-selected="false">📊 History</button>
+</nav>
+<main id="jarvisDashboard" class="jarvis-page">
 
 <h2>Welcome Back</h2>
 <p>Your personal fitness dashboard is online.</p>
@@ -462,7 +517,8 @@ document.getElementById("workoutForm")
         workouts.push({
             exercise: exercise,
             amount: amount,
-            unit: unit
+            unit: unit,
+            date: getLocalDateKey(new Date())
         });
 
         localStorage.setItem(
@@ -554,6 +610,8 @@ setInterval(function() {
 
     const section = document.createElement("section");
     section.id = "nutritionTracker";
+    section.classList.add("jarvis-page");
+    section.hidden = true;
 
     section.innerHTML = `
         <h2>🥗 JARVIS Nutrition Intelligence</h2>
@@ -771,82 +829,442 @@ setInterval(function() {
         }
     });
 
-    // Quantity and nutrition controls
+    // Quantity controls
     const controls = document.createElement("div");
-    controls.style.cssText = "margin:12px 0;display:flex;gap:8px;flex-wrap:wrap";
+    controls.style.margin = "12px 0";
+
     const quantity = document.createElement("input");
-    quantity.type = "number"; quantity.min = "0.1"; quantity.step = "any";
-    quantity.value = "100"; quantity.placeholder = "Quantity";
-    quantity.style.cssText = "flex:1;min-width:100px";
+    quantity.type = "number";
+    quantity.min = "0.1";
+    quantity.step = "any";
+    quantity.value = "100";
+    quantity.placeholder = "Quantity";
+
     const unit = document.createElement("select");
-    unit.style.cssText = "flex:1;min-width:140px";
-    [["grams","Grams"],["pieces","Pieces"],["portion","Portions (estimated)"],
-     ["teaspoon","Small spoon"],["tablespoon","Big spoon"],["halfspoon","Half spoon"],
-     ["halfbowl","Half bowl"],["mediumbowl","Medium bowl"]].forEach(([value,label]) => {
+
+    const servingOptions = [
+        ["grams", "Grams (g)"],
+        ["pieces", "Pieces (estimated)"],
+        ["half-teaspoon", "Half small spoon (½ tsp)"],
+        ["teaspoon", "Small spoon (1 tsp)"],
+        ["half-tablespoon", "Half big spoon (½ tbsp)"],
+        ["tablespoon", "Big spoon (1 tbsp)"],
+        ["half-bowl", "Half bowl"],
+        ["medium-bowl", "Medium bowl"],
+        ["full-bowl", "Full bowl"],
+        ["half-plate", "Half plate"],
+        ["full-plate", "Full plate"],
+        ["portion", "One serving (estimated)"]
+    ];
+    servingOptions.forEach(([value, label]) => {
         const option = document.createElement("option");
-        option.value=value; option.textContent=label; unit.appendChild(option);
+        option.value = value;
+        option.textContent = label;
+        unit.appendChild(option);
     });
+    controls.id = "jarvisServingControls";
+
     const info = document.createElement("p");
-    info.style.cssText="font-size:12px;color:#8fdfff;width:100%;margin:4px 0";
-    controls.append(quantity,unit,info);
-    nameInput.insertAdjacentElement("afterend",controls);
-    // Estimated values appear directly in editable fields; no toggle required.
-    calorieInput.readOnly = false;
-    proteinInput.readOnly = false;
-    const editHint=document.createElement("p");
-    editHint.style.cssText="font-size:12px;color:#8fdfff;margin:5px 0";
-    editHint.textContent="Estimated values — tap either number to correct it before logging.";
-    proteinInput.insertAdjacentElement("afterend",editHint);
-    const portionWeights={"Boiled Egg":50,"Chapati / Roti":40,"Idli":40,
-      "Plain Dosa":100,"Samosa":100,"Vada Pav":150,"Banana":120,"Apple":180,
-      "Chicken Nugget":20,"Chicken Nuggets":20};
-    function calculateNutrition() {
-        const food=foods.find(item=>item.name.toLowerCase()===nameInput.value.trim().toLowerCase());
-        const amount=Number(quantity.value);
-        calorieInput.readOnly=false;
-        proteinInput.readOnly=false;
-        if (!food) {
-            calorieInput.value="";proteinInput.value="";
-            info.textContent="Custom food: enter calories and protein for the quantity eaten.";
-            return;
-        }
-        if (!Number.isFinite(amount)||amount<=0) {
-            info.textContent="Enter a quantity greater than zero.";
-            calorieInput.value="";proteinInput.value="";
-            return;
-        }
-        const perPiece=food.pieceGrams||food.portionGrams||portionWeights[food.name];
-        const portion=food.portionGrams||portionWeights[food.name]||150;
-        const factors={grams:1,pieces:perPiece,portion:portion,teaspoon:5,
-            tablespoon:15,halfspoon:2.5,halfbowl:75,mediumbowl:150};
-        const factor=factors[unit.value];
-        if (!factor) {
-            info.textContent="Piece weight unknown: enter a verified piece weight or switch to grams; manual nutrition can be entered.";
-            calorieInput.value="";proteinInput.value="";
-            return;
-        }
-        const grams=amount*factor;
-        calorieInput.value=(food.calories*grams/100).toFixed(1);
-        proteinInput.value=(food.protein*grams/100).toFixed(1);
-        info.textContent="Estimated "+grams.toFixed(0)+" g. You can directly edit the numbers below.";
+    info.style.fontSize = "12px";
+    info.style.color = "#8fdfff";
+    info.textContent = "Serving weights are estimates; adjust for your actual dish.";
+
+    controls.appendChild(quantity);
+    controls.appendChild(unit);
+    controls.appendChild(info);
+
+    nameInput.insertAdjacentElement("afterend", controls);
+
+    // Database values are suggestions, not locked fields: the user may correct either value.
+    function setManualMode() {
+        calorieInput.readOnly = false;
+        proteinInput.readOnly = false;
+        calorieInput.style.backgroundColor = "#173b46";
+        proteinInput.style.backgroundColor = "#173b46";
     }
-    nameInput.addEventListener("input",calculateNutrition);
-    quantity.addEventListener("input",calculateNutrition);
-    unit.addEventListener("change",()=>{
-        if(unit.value==="pieces" && Number(quantity.value)===100) quantity.value="1";
-        calculateNutrition();
+    setManualMode();
+
+    // Approximate household portion weights in grams
+    const portionWeights = {
+        "Boiled Egg": 50,
+        "Chapati / Roti": 40,
+        "Idli": 40,
+        "Plain Dosa": 100,
+        "Samosa": 100,
+        "Vada Pav": 150,
+        "Banana": 120,
+        "Apple": 180
+    };
+
+    function servingGrams(food, amount) {
+        const base = Number(food.portionGrams || portionWeights[food.name] || 150);
+        const name = food.name.toLowerCase();
+        const isLiquid = /milk|juice|tea|coffee|soup|lassi|shake|water|dal|curry|gravy|sambar|rasam/.test(name);
+        const isDense = /rice|biryani|pulao|pasta|noodle|poha|upma|khichdi/.test(name);
+        const bowl = isLiquid ? 200 : isDense ? 180 : 150;
+        const plate = isLiquid ? 250 : isDense ? 300 : 220;
+        // Per-piece estimates are item-specific where possible, otherwise one portion.
+        // For example, one chicken nugget is approximately 20 g; package labels prevail.
+        const piece = /nugget/.test(name) ? 20
+            : /momo|dumpling/.test(name) ? 25
+            : /egg/.test(name) ? 50
+            : /idli/.test(name) ? 40
+            : /chapati|roti/.test(name) ? 40
+            : /samosa/.test(name) ? 100
+            : base;
+        const weights = {
+            "grams": 1,
+            "pieces": piece,
+            "half-teaspoon": 2.5,
+            "teaspoon": 5,
+            "half-tablespoon": 7.5,
+            "tablespoon": 15,
+            "half-bowl": bowl / 2,
+            "medium-bowl": bowl * 0.75,
+            "full-bowl": bowl,
+            "half-plate": plate / 2,
+            "full-plate": plate,
+            "portion": base
+        };
+        return amount * weights[unit.value];
+    }
+
+    function calculateNutrition() {
+        const food = foods.find(item =>
+            item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
+        );
+
+        if (!food) {
+            calorieInput.value = "";
+            proteinInput.value = "";
+            setManualMode(true);
+            info.textContent = nameInput.value.trim()
+                ? "Custom food: enter calories and protein for the amount you ate."
+                : "Search for a food, or type your own and enter its nutrition.";
+            return;
+        }
+
+        setManualMode(false);
+        const amount = Number(quantity.value);
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            calorieInput.value = "";
+            proteinInput.value = "";
+            info.textContent = "Enter a quantity greater than zero.";
+            return;
+        }
+
+const grams = servingGrams(food, amount);
+
+        calorieInput.value = (food.calories * grams / 100).toFixed(1);
+        proteinInput.value = (food.protein * grams / 100).toFixed(1);
+
+        info.textContent =
+            "Estimated for about " + grams.toFixed(0) + " g. You can edit the calories and protein below before logging.";
+    }
+
+    nameInput.addEventListener("input", calculateNutrition);
+    // Reset to manual entry after successfully logging a food.
+    addButton.addEventListener("click", function () {
+        if (!nameInput.value.trim()) {
+            setManualMode(true);
+            info.textContent = "Search for a food, or type your own and enter its nutrition.";
+            hideFoodSuggestions();
+        }
     });
-    addButton.addEventListener("click",function(){
-        const food=foods.find(item=>item.name.toLowerCase()===nameInput.value.trim().toLowerCase());
-        if(!food||!calorieInput.value||!proteinInput.value||Number(quantity.value)<=0)return;
-        nameInput.value=food.name+" ("+quantity.value+" "+unit.options[unit.selectedIndex].text+")";
-    },true);
-    addButton.addEventListener("click",()=>{
-        if(!nameInput.value.trim()){hideFoodSuggestions();info.textContent="Search or enter a food."; }
-    });
+    quantity.addEventListener("input", calculateNutrition);
+    unit.addEventListener("change", calculateNutrition);
+
+    // Add quantity details to the existing food log
+    addButton.addEventListener("click", function () {
+        const food = foods.find(item =>
+            item.name.toLowerCase() === nameInput.value.trim().toLowerCase()
+        );
+
+        // Manual foods go straight to the existing logger, unchanged.
+        if (!food) return;
+        if (!calorieInput.value || !proteinInput.value) return;
+
+        const amount = Number(quantity.value);
+
+        if (amount <= 0) return;
+
+        const grams = servingGrams(food, amount);
+
+        nameInput.value =
+            food.name + " (" + grams.toFixed(0) + " g)";
+    }, true);
+
     console.log("JARVIS Food Intelligence activated:", foods.length, "foods");
 })();
 </script>
+<section id="jarvisSteps" class="jarvis-page" hidden>
+<h2>🚶 JARVIS Steps &amp; Health</h2>
+<p>Enter today's steps from your Pedometer app. Set your own goal and see approximate walking energy expenditure.</p>
+<div class="step-fields">
+<label for="stepGoal">Daily step goal<input id="stepGoal" type="number" min="100" max="100000" step="100" value="8000" inputmode="numeric"></label>
+<label for="stepCount">Steps walked today<input id="stepCount" type="number" min="0" max="150000" step="1" value="0" inputmode="numeric"></label>
+<label for="stepWeight">Your weight (kg)<input id="stepWeight" type="number" min="20" max="400" step="0.1" value="85" inputmode="decimal"></label>
+<label for="stepStride">Estimated step length (cm)<input id="stepStride" type="number" min="30" max="130" step="1" value="70" inputmode="numeric"></label>
+</div>
+<div class="step-summary">
+<div><strong id="stepsProgressText">0 / 8,000 steps</strong><small>Today's progress</small></div>
+<div class="steps-progress-track"><div id="stepsProgressBar"></div></div>
+<div class="step-metrics"><div><strong id="stepsDistance">0.00 km</strong><small>Estimated distance</small></div><div><strong id="stepsCalories">0 kcal</strong><small>Estimated active walking calories</small></div><div><strong id="stepsFatEquivalent">0 g</strong><small>Energy equivalent in body fat — not actual fat lost</small></div></div>
+</div>
+<p id="stepFeedback" aria-live="polite"></p>
+<p class="step-note">Estimates assume level-ground walking and roughly 0.5 kcal per kg per km. Speed, terrain, fitness and your actual stride affect the result. The fat-equivalent figure divides estimated calories by 7.7 kcal/g; it does <strong>not</strong> measure body fat burned or weight lost. Fat loss depends on your total energy balance over time.</p>
+<p class="step-note">Your entries are saved on this device. Steps do not sync automatically with Apple Health or Pedometer.</p>
+</section>
+
+<section id="jarvisHistory" class="jarvis-page" hidden>
+  <h2>📊 Progress &amp; History</h2>
+  <p class="history-note">See your daily missions, average steps, and estimated walking calories over time. Only data logged on this device can be included.</p>
+  <div class="history-controls">
+    <label for="historyPeriod">Summary period
+      <select id="historyPeriod"><option value="day">Today / Selected day</option><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select>
+    </label>
+    <label for="historyDate">Date to view
+      <input id="historyDate" type="date">
+    </label>
+  </div>
+  <p class="history-note" id="historyRange" aria-live="polite"></p>
+  <div class="history-cards" id="historyMetrics" aria-live="polite"></div>
+  <h3>Progress breakdown</h3>
+  <div id="historyBreakdown"></div>
+  <div id="historyMissionDetail"></div>
+  <div class="weight-panel">
+    <h3>⚖️ Weight tracking &amp; forecast</h3>
+    <p class="history-note">Your measured weight takes priority. JARVIS can make a rough projection using your recorded food calories, step calories, and an adjustable baseline burn. This is not a measurement of fat loss, and incomplete logs can make the projection inaccurate.</p>
+    <label for="historyBaselineBurn">Estimated daily energy burn excluding logged walking (kcal)
+      <input id="historyBaselineBurn" type="number" min="800" max="6000" step="50" value="1900" inputmode="numeric">
+    </label>
+    <div id="historyWeightResult" class="weight-result" aria-live="polite"></div>
+    <p class="history-note" id="historyWeightNote"></p>
+    <h3>Correct with a real weigh-in</h3>
+    <div class="history-controls">
+      <label for="historyWeighDate">Measurement date<input id="historyWeighDate" type="date"></label>
+      <label for="historyWeighValue">Actual weight (kg)<input id="historyWeighValue" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="e.g. 84.5"></label>
+    </div>
+    <button id="historySaveWeigh" type="button">Save measured weight</button>
+    <p class="history-note" id="historySaveMessage" role="status"></p>
+    <p class="history-note">Without a weigh-in, today’s Steps &amp; Health weight is only a starting assumption, not a past measurement. Record a real weigh-in whenever available to reset the forecast. Weigh-ins stay editable by changing the date and value and saving again.</p>
+  </div>
+</section>
+<script>
+(function(){
+  'use strict';
+  const el=id=>document.getElementById(id);
+  const todayKey=()=>getLocalDateKey(new Date());
+  const parseDate=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d,12);};
+  const dateKey=d=>getLocalDateKey(d);
+  const addDays=(d,n)=>{const copy=new Date(d);copy.setDate(copy.getDate()+n);return copy;};
+  const read=(k,fallback)=>{try{const raw=localStorage.getItem(k);return raw===null?fallback:JSON.parse(raw);}catch(e){return fallback;}};
+  const validNumber=(v,min,max)=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))&&Number(v)>=min&&Number(v)<=max;
+  const number=v=>Math.round(v).toLocaleString('en-IN');
+  const daysBetween=(a,b)=>Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/86400000);
+  const allDays=(start,end)=>{let items=[];for(let d=new Date(start);d<=end&&items.length<370;d=addDays(d,1))items.push(dateKey(d));return items;};
+  const dateLabel=k=>parseDate(k).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  const stepsData=k=>{const val=read('jarvisSteps_'+k,null);return validNumber(val,0,150000)?Number(val):null;};
+  const foodData=k=>{const val=read('jarvisNutrition_'+k,null);return Array.isArray(val)&&val.length?val:null;};
+  const missionData=k=>{const val=read('jarvisDaily_'+k,null);return Array.isArray(val)?val:null;};
+  const stride=()=>validNumber(read('jarvisStepStride',70),30,130)?Number(read('jarvisStepStride',70)):70;
+  const weightAt=k=>{const values=read('jarvisWeightMeasurements',{});const keys=Object.keys(values).filter(day=>day<=k&&validNumber(values[day],20,400)).sort();if(keys.length)return {date:keys[keys.length-1],kg:Number(values[keys[keys.length-1]]),measured:true}; const initial=read('jarvisStepWeight',85);return {date:todayKey(),kg:validNumber(initial,20,400)?Number(initial):85,measured:false};};
+  const walkingCalories=(k,n,w)=>n*stride()/100000*w*0.5;
+  function periodBounds(date,period){
+    const d=parseDate(date);let start=new Date(d),end=new Date(d);
+    if(period==='week'){start=addDays(d,-((d.getDay()+6)%7));end=addDays(start,6);}
+    if(period==='month'){start=new Date(d.getFullYear(),d.getMonth(),1,12);end=new Date(d.getFullYear(),d.getMonth()+1,0,12);}
+    if(period==='year'){start=new Date(d.getFullYear(),0,1,12);end=new Date(d.getFullYear(),11,31,12);}
+    return [start,end];
+  }
+  function reportDay(k){
+    const d=parseDate(k),plan=workoutPlan[d.getDay()];
+    const completed=missionData(k);
+    const count=completed?completed.filter(i=>Number.isInteger(i)&&i>=0&&i<plan.exercises.length).length:null;
+    const steps=stepsData(k),meal=foodData(k);
+    const w=weightAt(k).kg;
+    const loggedExtra=read('jarvisWorkouts',[]);
+    const additional=Array.isArray(loggedExtra)?loggedExtra.filter(x=>x.date===k):[];
+    return {k,count,total:plan.exercises.length,completed,additional,steps,walking:steps===null?null:walkingCalories(k,steps,w),intake:meal?meal.reduce((n,m)=>n+(Number(m.calories)||0),0):null};
+  }
+  function projection(asOf){
+    const recorded=read('jarvisWeightMeasurements',{});
+    const weighKeys=Object.keys(recorded).filter(k=>k<=asOf&&validNumber(recorded[k],20,400)).sort();
+    const base=validNumber(el('historyBaselineBurn').value,800,6000)?Number(el('historyBaselineBurn').value):1900;
+    const initial=read('jarvisStepWeight',85);
+    const startWeight=weighKeys.length?Number(recorded[weighKeys[weighKeys.length-1]]):(validNumber(initial,20,400)?Number(initial):85);
+    const startDate=weighKeys.length?weighKeys[weighKeys.length-1]:todayKey();
+    if(startDate>asOf)return {kg:null,days:0,anchor:startDate,measured:false};
+    let delta=0,days=0;
+    for(let d=addDays(parseDate(startDate),1);dateKey(d)<=asOf&&daysBetween(parseDate(startDate),d)<=370;d=addDays(d,1)){
+      const k=dateKey(d),food=foodData(k);
+      // Unlogged dates do not imply zero intake. No calorie-balance estimate for those dates.
+      if(!food)continue;
+      const intake=food.reduce((n,m)=>n+(Number(m.calories)||0),0);
+      const steps=stepsData(k);
+      const walk=steps===null?0:walkingCalories(k,steps,startWeight);
+      delta+=(intake-base-walk)/7700;
+      days++;
+    }
+    return {kg:startWeight+delta,days,anchor:startDate,measured:weighKeys.length>0,delta};
+  }
+  function renderWeight(){
+    const ref=el('historyDate').value||todayKey();
+    const pred=projection(ref);
+    const actual=read('jarvisWeightMeasurements',{})[ref];
+    if(validNumber(actual,20,400)){
+      el('historyWeightResult').textContent=Number(actual).toFixed(1)+' kg · measured';
+      el('historyWeightNote').textContent='Recorded weigh-in on '+dateLabel(ref)+'. Your actual weight overrides the projection for this day.';
+    }else if(pred.kg===null){
+      el('historyWeightResult').textContent='No reliable estimate for this date';
+      el('historyWeightNote').textContent='A measured weigh-in on or before this date is needed to estimate historical weight.';
+    }else{
+      el('historyWeightResult').textContent=pred.kg.toFixed(1)+' kg · provisional estimate';
+      el('historyWeightNote').textContent='Starting from '+dateLabel(pred.anchor)+'; '+pred.days+' food-logged day(s) used. Unlogged days are excluded. The calorie-balance forecast assumes logged food days are complete and baseline burn is accurate.';
+    }
+  }
+  function render(){
+    const ref=el('historyDate').value||todayKey(),period=el('historyPeriod').value;
+    const [start,end]=periodBounds(ref,period),last=parseDate(todayKey());
+    const effectiveEnd=end<last?end:last;
+    const keys=effectiveEnd>=start?allDays(start,effectiveEnd):[];
+    const data=keys.map(reportDay);
+    const tracked=data.filter(x=>x.count!==null);
+    const stepDays=data.filter(x=>x.steps!==null);
+    const foodDays=data.filter(x=>x.intake!==null);
+    const missionAvg=tracked.length?tracked.reduce((n,x)=>n+x.count/x.total,0)/tracked.length*100:null;
+    const stepTotal=stepDays.reduce((n,x)=>n+x.steps,0);
+    const walkingTotal=stepDays.reduce((n,x)=>n+x.walking,0);
+    const foodTotal=foodDays.reduce((n,x)=>n+x.intake,0);
+    const avgSteps=stepDays.length?stepTotal/stepDays.length:null;
+    const workoutTotal=tracked.reduce((n,x)=>n+x.count,0);
+    const title=period==='day'?'Selected day':period==='week'?'Selected week':period==='month'?'Selected month':'Selected year';
+    el('historyRange').textContent=title+': '+dateLabel(dateKey(start))+(period==='day'?'':' – '+dateLabel(dateKey(end)))+' · '+(keys.length?'dates covered through '+dateLabel(dateKey(effectiveEnd)):'no past dates in this range');
+    function metric(value,label){return '<div class="history-card"><strong>'+value+'</strong><span>'+label+'</span></div>';}
+    el('historyMetrics').innerHTML=metric(missionAvg===null?'No records':missionAvg.toFixed(0)+'%','Average completed mission tasks · '+tracked.length+' recorded day(s)')+
+      metric(workoutTotal+' tasks','Completed workout mission tasks')+
+      metric(number(data.reduce((n,x)=>n+x.additional.length,0)),'Additional workout logs dated in this period')+
+      metric(avgSteps===null?'No records':number(avgSteps),'Average steps per logged day · '+stepDays.length+' day(s)')+
+      metric(number(stepTotal),'Total logged steps')+
+      metric(number(walkingTotal)+' kcal','Estimated active walking calories only')+
+      metric(foodDays.length?number(foodTotal)+' kcal':'No records','Food calories logged · '+foodDays.length+' day(s)');
+    const rows=period==='year'?Array.from({length:12},(_,m)=>{const items=data.filter(x=>parseDate(x.k).getMonth()===m);const n=items.filter(x=>x.steps!==null);const w=items.filter(x=>x.count!==null);return {name:new Date(parseDate(ref).getFullYear(),m,1).toLocaleString('en-IN',{month:'short'}),step:n.length?number(n.reduce((sum,x)=>sum+x.steps,0)/n.length)+' avg':'—',mission:w.length?(100*w.reduce((sum,x)=>sum+x.count/x.total,0)/w.length).toFixed(0)+'%':'—'};}):data.map(x=>({name:dateLabel(x.k),step:x.steps===null?'—':number(x.steps),mission:x.count===null?'—':x.count+'/'+x.total+' ('+Math.round(x.count/x.total*100)+'%)'}));
+    el('historyBreakdown').innerHTML='<div class="history-row"><b>'+(period==='year'?'Month':'Date')+'</b><b>'+(period==='year'?'Avg. steps':'Steps')+'</b><b>Mission</b></div>'+
+      (rows.length?rows.map(r=>'<div class="history-row"><span>'+r.name+'</span><span>'+r.step+'</span><span>'+r.mission+'</span></div>').join(''):'<p class="history-note">No records for these dates.</p>')+
+      '<p class="history-note">A dash means no saved entry, not zero activity. Older additional workouts had no date attached and cannot be allocated to past days. Walking calories exclude other exercise, resting metabolism and any unlogged activity.</p>';
+    // The selected day remains inspectable even while showing week/month/year totals.
+    const day=reportDay(ref);
+    const plan=workoutPlan[parseDate(ref).getDay()];
+    const completed=day.completed||[];
+    const escapeHtml=x=>String(x).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    el('historyMissionDetail').innerHTML='<h3>Mission detail · '+dateLabel(ref)+'</h3>'+
+      (day.completed===null?'<p class="history-note">No workout completion record saved for this date.</p>':
+      '<p class="history-note">'+completed.length+' of '+plan.exercises.length+' completed. Unchecked tasks are shown below.</p>'+plan.exercises.map((task,i)=>
+      '<div class="history-row" style="grid-template-columns:25px 1fr"><span>'+(completed.includes(i)?'✓':'○')+'</span><span>'+escapeHtml(task)+'</span></div>').join(''))+
+      (day.additional.length?'<h3>Additional workouts on this day</h3>'+day.additional.map(w=>'<p class="history-note">'+escapeHtml(w.exercise)+' · '+escapeHtml(w.amount)+' '+escapeHtml(w.unit)+'</p>').join(''):'');
+    const weigh=read('jarvisWeightMeasurements',{});
+    const rangeWeights=Object.keys(weigh).filter(k=>k>=dateKey(start)&&k<=dateKey(effectiveEnd)&&validNumber(weigh[k],20,400)).sort();
+    if(rangeWeights.length>1){
+      const a=rangeWeights[0],b=rangeWeights[rangeWeights.length-1],diff=Number(weigh[b])-Number(weigh[a]);
+      el('historyMissionDetail').insertAdjacentHTML('beforebegin','');
+      el('historyMetrics').insertAdjacentHTML('beforeend',metric((diff>0?'+':'')+diff.toFixed(1)+' kg','Measured weight change · '+dateLabel(a)+' to '+dateLabel(b)));
+    }else{
+      el('historyMetrics').insertAdjacentHTML('beforeend',metric('—','Weight change: log 2 weigh-ins in this period'));
+    }
+    renderWeight();
+  }
+  el('historyDate').value=todayKey();
+  el('historyWeighDate').value=todayKey();
+  const baseline=read('jarvisBaselineBurn',1900);
+  if(validNumber(baseline,800,6000))el('historyBaselineBurn').value=baseline;
+  el('historyPeriod').addEventListener('change',render);
+  el('historyDate').addEventListener('change',render);
+  el('historyBaselineBurn').addEventListener('change',()=>{
+    const value=Number(el('historyBaselineBurn').value);
+    if(!validNumber(value,800,6000)){el('historyBaselineBurn').value=read('jarvisBaselineBurn',1900);return;}
+    localStorage.setItem('jarvisBaselineBurn',JSON.stringify(value));render();
+  });
+  el('historyWeighDate').addEventListener('change',()=>{
+    const measurements=read('jarvisWeightMeasurements',{});
+    const k=el('historyWeighDate').value;
+    el('historyWeighValue').value=validNumber(measurements[k],20,400)?measurements[k]:'';
+  });
+  el('historySaveWeigh').addEventListener('click',()=>{
+    const date=el('historyWeighDate').value,raw=el('historyWeighValue').value;
+    const message=el('historySaveMessage');
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||dateKey(parseDate(date))!==date||date>todayKey()||raw.trim()===''||!validNumber(raw,20,400)){
+      message.textContent='Select a date no later than today and enter a measured weight between 20 and 400 kg.';return;
+    }
+    const records=read('jarvisWeightMeasurements',{});
+    records[date]=Number(raw);
+    try{
+      localStorage.setItem('jarvisWeightMeasurements',JSON.stringify(records));
+      if(date===todayKey()){
+        localStorage.setItem('jarvisStepWeight',JSON.stringify(Number(raw)));
+        const stepWeight=el('stepWeight');if(stepWeight){stepWeight.value=raw;stepWeight.dispatchEvent(new Event('input'));}
+      }
+      message.textContent='Measured weight saved for '+dateLabel(date)+'. You can edit the same date again.';
+      el('historyDate').value=date;render();
+    }catch(e){message.textContent='Could not save this weigh-in. Check browser storage.';}
+  });
+  // Keep history live when switching tabs and when another part of the app saves data.
+  window.renderJarvisHistory=render;
+  render();
+})();
+</script>
+
+<script>
+(function(){
+    const nav=document.querySelector('.jarvis-tabs');
+    const pages={dashboard:document.getElementById('jarvisDashboard'),nutrition:document.getElementById('nutritionTracker'),steps:document.getElementById('jarvisSteps'),history:document.getElementById('jarvisHistory')};
+    const buttons=[...document.querySelectorAll('.jarvis-tab')];
+    function openPage(key){
+        Object.entries(pages).forEach(([name,page])=>{page.hidden=name!==key;});
+        buttons.forEach(button=>button.setAttribute('aria-selected',String(button.dataset.page===key)));
+        if(key==='history' && typeof window.renderJarvisHistory==='function') window.renderJarvisHistory();
+        window.scrollTo(0,0);
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>openPage(button.dataset.page)));
+    nav.hidden=false;
+    openPage('dashboard');
+    const goal=document.getElementById('stepGoal');
+    const count=document.getElementById('stepCount');
+    const weight=document.getElementById('stepWeight');
+    const stride=document.getElementById('stepStride');
+    const key='jarvisSteps_'+getLocalDateKey(new Date());
+    function read(key,fallback){try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v);}catch(e){return fallback;}}
+    goal.value=read('jarvisStepGoal',8000);
+    weight.value=read('jarvisStepWeight',85);
+    const measurements=read('jarvisWeightMeasurements',{});
+    const todayMeasure=measurements[getLocalDateKey(new Date())];
+    if(Number.isFinite(Number(todayMeasure)) && Number(todayMeasure)>=20 && Number(todayMeasure)<=400) weight.value=todayMeasure;
+    stride.value=read('jarvisStepStride',70);
+    const hadSavedSteps=localStorage.getItem(key)!==null;
+    let stepCountEdited=false;
+    count.value=read(key,0);
+    const fmt=n=>Math.round(n).toLocaleString('en-IN');
+    function update(){
+        const g=Number(goal.value),n=Number(count.value),w=Number(weight.value),st=Number(stride.value);
+        const valid=Number.isFinite(g)&&g>=100&&g<=100000&&Number.isInteger(n)&&n>=0&&n<=150000&&w>=20&&w<=400&&st>=30&&st<=130;
+        const feedback=document.getElementById('stepFeedback');
+        if(!valid){feedback.textContent='Enter a valid goal (100–100,000), steps (0–150,000), weight (20–400 kg) and step length (30–130 cm).';return;}
+        feedback.textContent=n>=g?'Daily step goal achieved!':'You are '+fmt(g-n)+' steps from your goal.';
+        const km=n*st/100000;
+        const kcal=km*w*0.5;
+        document.getElementById('stepsProgressText').textContent=fmt(n)+' / '+fmt(g)+' steps ('+Math.round(n/g*100)+'%)';
+        document.getElementById('stepsProgressBar').style.width=Math.min(100,n/g*100)+'%';
+        document.getElementById('stepsDistance').textContent=km.toFixed(2)+' km';
+        document.getElementById('stepsCalories').textContent=fmt(kcal)+' kcal';
+        document.getElementById('stepsFatEquivalent').textContent=fmt(kcal/7.7)+' g';
+        try{localStorage.setItem('jarvisStepGoal',JSON.stringify(g));localStorage.setItem('jarvisStepWeight',JSON.stringify(w));localStorage.setItem('jarvisStepStride',JSON.stringify(st));if(hadSavedSteps||stepCountEdited)localStorage.setItem(key,JSON.stringify(n));}catch(e){feedback.textContent+=' Storage unavailable; values may not persist.';}
+    }
+    count.addEventListener('input',()=>{stepCountEdited=true;update();});
+    [goal,weight,stride].forEach(el=>el.addEventListener('input',update));
+    update();
+})();
+</script>
+
 <script type="module">
 import { initializeApp } from
 "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
@@ -950,6 +1368,8 @@ const main = document.querySelector("main");
 
 if (header) header.style.display = "none";
 if (main) main.style.display = "none";
+document.querySelectorAll(".jarvis-page:not(main)").forEach(page => page.style.display = "none");
+if (document.querySelector(".jarvis-tabs")) document.querySelector(".jarvis-tabs").style.display = "none";
 
 /* GOOGLE LOGIN */
 
@@ -994,6 +1414,8 @@ onAuthStateChanged(auth, function(user) {
 
         if (header) header.style.display = "";
         if (main) main.style.display = "";
+        document.querySelectorAll(".jarvis-page:not(main)").forEach(page => page.style.display = "");
+        document.querySelector(".jarvis-tabs").style.display = "";
 
         console.log("JARVIS authenticated:", user.email);
 
@@ -1003,6 +1425,8 @@ onAuthStateChanged(auth, function(user) {
 
         if (header) header.style.display = "none";
         if (main) main.style.display = "none";
+        document.querySelectorAll(".jarvis-page:not(main)").forEach(page => page.style.display = "none");
+        document.querySelector(".jarvis-tabs").style.display = "none";
     }
 
 });
